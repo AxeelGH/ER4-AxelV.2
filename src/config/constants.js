@@ -1,0 +1,19 @@
+export const GameState = {
+  INVALID: -1,
+  LOADING: 0,
+  MENU: 1,
+  PLAYING: 2,
+  PAUSED: 3,
+  GAME_OVER: 4,
+  HIGHSCORE: 5,
+};
+
+export const FPS = 60;
+
+export const Key = {
+  LEFT: 37,
+  RIGHT: 39,
+  DOWN: 40,
+  UP: 38,
+  SPACE: 32,
+};
