@@ -60,11 +60,17 @@ class Game {
   
   update(dt) {
     switch (this.gameState) {
-
+        case GameState.MENU:
+            this.updateMenu(dt);
+            break;
 
       default:
         break;
     }
+  }
+
+  updateMenu(dt) {  
+    
   }
 
     render() {
