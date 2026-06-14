@@ -17,3 +17,10 @@ export const Key = {
   UP: 38,
   SPACE: 32,
 };
+
+export const TILE_SIZE = 32;   
+export const CELL_SIZE = 16;  
+
+export const GRID_COLS = 10;
+export const GRID_ROWS = 20;
+
