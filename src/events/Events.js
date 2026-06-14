@@ -29,8 +29,8 @@ export class Events {
         globals.action.moveRight = true;
         break;
 
-      case Key.CONFIRM:
-        globals.action.confirm = true;
+      case Key.SPACE:
+        globals.action.space = true;
         break;
     }
   }
@@ -53,8 +53,8 @@ export class Events {
         globals.action.moveRight = false;
         break;
 
-      case Key.CONFIRM:
-        globals.action.confirm = false;
+      case Key.SPACE:
+        globals.action.space = false;
         break;
     }
   }

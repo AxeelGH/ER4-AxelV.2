@@ -3,9 +3,11 @@ export const GameState = {
   LOADING: 0,
   MENU: 1,
   PLAYING: 2,
-  PAUSED: 3,
+  STORY: 3,
   GAME_OVER: 4,
   HIGHSCORE: 5,
+  CONTROLS: 6,
+  
 };
 
 export const FPS = 60;

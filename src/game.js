@@ -63,6 +63,22 @@ class Game {
         case GameState.MENU:
             this.updateMenu(dt);
             break;
+        
+        case GameState.PLAYING:
+          this.updatePlaying(dt);
+          break;
+        
+        case GameState.STORY:
+          this.updateSecondary(dt);
+          break;
+        
+        case GameState.CONTROLS:
+          this.updateSecondary(dt);
+          break;
+        
+        case GameState.HIGHSCORE:
+          this.updateSecondary(dt);
+          break;
 
       default:
         break;
@@ -70,7 +86,49 @@ class Game {
   }
 
   updateMenu(dt) {  
-    
+    if (globals.action.moveUp) {
+    globals.action.moveUp = false;
+    globals.menuIndex = globals.menuIndex > 0 ? globals.menuIndex - 1 : 3;
+  }
+
+  if (globals.action.moveDown) {
+    globals.action.moveDown = false;
+    globals.menuIndex = globals.menuIndex < 3 ? globals.menuIndex + 1 : 0;
+  }
+
+  if (globals.action.space) {
+    globals.action.space = false;
+
+    switch (globals.menuIndex) {
+      case 0:
+        this.gameState = GameState.STORY;
+        globals.gameState = GameState.STORY;
+        break;
+      case 1:
+        this.gameState = GameState.PLAYING;
+        globals.gameState = GameState.PLAYING;
+        break;
+      case 2:
+        this.gameState = GameState.CONTROLS;
+        globals.gameState = GameState.CONTROLS;
+        break;
+      case 3:
+        this.gameState = GameState.HIGHSCORE;
+        globals.gameState = GameState.HIGHSCORE;
+        break;
+    }
+  } 
+  }
+  
+  updatePlaying(dt) {
+  }
+  
+  updateSecondary(dt) {
+    if (globals.action.space) {
+      globals.action.space = false;
+      this.gameState = GameState.MENU;
+      globals.gameState = GameState.MENU;
+    }
   }
 
     render() {
