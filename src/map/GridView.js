@@ -19,7 +19,7 @@ export default class GridView {
   }
 
   render() {
-    this.renderGrid();
+    //this.renderGrid();
     this.renderBorder();
   }
 

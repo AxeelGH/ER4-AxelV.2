@@ -26,3 +26,4 @@ export const GRID_COLS = 10;
 export const GRID_ROWS = 19;
 export const GRID_ORIGIN_X = 180;
 export const GRID_ORIGIN_Y = 32;
+export const COIN_SIZE = 20;

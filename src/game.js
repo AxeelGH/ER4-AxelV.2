@@ -179,15 +179,17 @@ class Game {
     globals.dropTimer += dt;
     if (globals.dropTimer >= globals.dropInterval) {
       globals.dropTimer = 0;
-      globals.currentCoin.fil += 1;
 
-      if (globals.currentCoin.fil >= globals.grid.rows) {
-        globals.grid.setCell(
-          globals.grid.rows - 1,
-          globals.currentCoin.col,
-          globals.currentCoin.type + 1,
-        );
+      const coin = globals.currentCoin;
+      const nextFil = coin.fil + 1;
+
+      if (nextFil >= globals.grid.rows ||
+        globals.grid.data[nextFil][coin.col] !== 0
+      ) {
+        globals.grid.setCell(coin.fil, coin.col, coin.type + 1);
         globals.currentCoin = new Coin();
+      } else {
+        coin.fil = nextFil;
       }
     }
   }
