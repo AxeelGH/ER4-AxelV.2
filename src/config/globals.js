@@ -16,8 +16,12 @@ export default {
 
   score: 0,
   highScore: 0,
-  level: 1,
+  currentLevel: 1,
   lives: 3,
+  chrono: null,
+  currentPowerUP: "NONE",
+  curse:0,
+  levelTime: 120,
 
   menuIndex: 0,
 

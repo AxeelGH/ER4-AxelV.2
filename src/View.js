@@ -1,6 +1,7 @@
 import globals from "./config/globals.js";
 import { GameState } from "./config/constants.js";
 import GridView from "./map/GridView.js";
+import Chronometer from "./Chronometer.js";
 
 export class View {
   constructor(ctx, game) {
@@ -28,6 +29,7 @@ export class View {
 
       case GameState.PLAYING:
         this.renderPlaying();
+        this.renderHud();
         break;
 
       case GameState.STORY:
@@ -86,6 +88,54 @@ export class View {
     );
     this.gridView.render();
   }
+
+  renderHud() {
+
+  const chrono = globals.chrono;
+  const timeString = chrono.getTime(globals.levelTime);
+
+  const ctx = this.ctx;
+  const canvas = ctx.canvas;
+
+  ctx.textAlign = "left";
+  ctx.font = "16px dungeon";  
+
+  ctx.fillStyle = "lightblue";
+  ctx.fillText("SCORE", 360, 120);
+  ctx.fillStyle = "lightgray";
+  ctx.fillText(" " + globals.score, 345, 135);
+
+  ctx.fillStyle = "lightblue";
+  ctx.fillText("LEVEL " + globals.currentLevel, canvas.width - 150, 60);
+
+  ctx.fillStyle = "lightblue";
+  ctx.fillText("HIGH SCORE", canvas.width - 150, 80);
+  ctx.fillStyle = "lightgray";
+  ctx.fillText(" " + globals.highScore, canvas.width - 167, 95);
+
+  ctx.fillStyle = "lightblue";
+  ctx.fillText("TIME", 50, canvas.height - 320);
+  ctx.fillStyle = "lightgray";
+  ctx.fillText(" " + timeString, 30, canvas.height - 305);
+
+  ctx.fillStyle = "lightblue";
+  ctx.fillText("LIVES", 360, 155);
+  this.renderLives(360, 180, globals.lives);
+ 
+  ctx.fillStyle = "lightblue";
+  ctx.fillText("POWER-UP", 360, 240);
+  ctx.fillStyle = "lightgray";
+  ctx.fillText(globals.currentPowerUP, 360, 260);
+}
+
+renderLives(x, y, lives) {
+  const ctx = this.ctx;
+  ctx.font = "20px dungeon";
+  ctx.fillStyle = "#ff6666";
+  for (let i = 0; i < lives; i++) {
+    ctx.fillText("❤️", x + i * 25, y);
+  }
+}
 
   renderStory() {
     this.ctx.drawImage(

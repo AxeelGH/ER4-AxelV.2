@@ -5,6 +5,7 @@ import { View } from "./View.js";
 import Grid from "./map/Grid.js";
 import GridView from "./map/GridView.js";
 import Asset from "./assets/assets.js";
+import Chronometer from "./Chronometer.js";
 
 class Game {
   constructor(canvas) {
@@ -22,6 +23,7 @@ class Game {
 
     globals.grid = new Grid();
     this.gridView = new GridView(this.ctx);
+    globals.chrono = new Chronometer();
 
     globals.action = {
       moveUp: false,
@@ -145,6 +147,7 @@ class Game {
         case 1:
           this.gameState = GameState.PLAYING;
           globals.gameState = GameState.PLAYING;
+          globals.levelTime = 120;
           break;
         case 2:
           this.gameState = GameState.CONTROLS;
@@ -158,7 +161,16 @@ class Game {
     }
   }
 
-  updatePlaying(dt) {}
+  updatePlaying(dt) {
+
+    if(globals.levelTime > 0){
+      globals.levelTime -= dt;
+    }
+    if(globals.levelTime <= 0){
+      this.gameState = GameState.GAME_OVER;
+      globals.gameState = GameState.GAME_OVER;
+    }
+  }
 
   updateSecondary(dt) {
     if (globals.action.space) {
