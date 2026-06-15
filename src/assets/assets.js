@@ -1,5 +1,4 @@
 import globals from "../config/globals.js";
-import { updateMusic } from "./Music.js";
 
 export default class Asset {
   constructor() {}

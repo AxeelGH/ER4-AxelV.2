@@ -2,21 +2,26 @@ import globals from "./config/globals.js";
 import { GameState } from "./config/constants.js";
 import { Events } from "./events/Events.js";
 import { View } from "./View.js";
+import Grid from "./map/Grid.js";
+import GridView from "./map/GridView.js";
+import Asset from "./assets/assets.js";
 
 class Game {
-  constructor(canvas, gameData) {
+  constructor(canvas) {
     this.canvas = canvas;
     this.ctx = canvas.getContext("2d");
 
     globals.ctx = this.ctx;
-    this.gameData = gameData;
 
-    this.gameState = GameState.MENU;
-    globals.gameState = GameState.MENU;
-    console.log("Game State: MENU");
+    this.gameState = GameState.LOADING;
+    globals.gameState = GameState.LOADING;
+    console.log("Game State: LOADING");
 
     this.inputManager = new Events();
     this.view = new View(this.ctx, this);
+
+    globals.grid = new Grid();
+    this.gridView = new GridView(this.ctx);
 
     globals.action = {
       moveUp: false,
@@ -27,7 +32,24 @@ class Game {
     };
   }
 
-    execute() {
+  static async create(canvas, gameData) {
+    console.log("Initializing...");
+    const game = new Game(canvas, gameData);
+
+    globals.gameInstance = game;
+
+    globals.sprites = [];
+    globals.tileSets = [];
+    globals.assetsToLoad = [];
+    globals.assetsLoaded = 0;
+
+    game.assets = new Asset();
+    game.assets.loadAssets();
+
+    return game;
+  }
+
+  execute() {
     globals.previousCycleMilliseconds = 0;
 
     function gameLoop(currentTime) {
@@ -38,7 +60,8 @@ class Game {
         return;
       }
 
-      const elapsedSeconds = (currentTime - globals.previousCycleMilliseconds) / 1000;
+      const elapsedSeconds =
+        (currentTime - globals.previousCycleMilliseconds) / 1000;
       globals.previousCycleMilliseconds = currentTime;
 
       globals.deltaTime += elapsedSeconds;
@@ -57,72 +80,86 @@ class Game {
 
     requestAnimationFrame(gameLoop);
   }
-  
+
+  loading(dt) {
+    if (
+      globals.assetsLoaded === globals.assetsToLoad.length &&
+      globals.assetsToLoad.length > 0
+    ) {
+      this.gameState = GameState.MENU;
+      globals.gameState = GameState.MENU;
+      console.log("Game State: MENU");
+    }
+  }
+
   update(dt) {
     switch (this.gameState) {
-        case GameState.MENU:
-            this.updateMenu(dt);
-            break;
-        
-        case GameState.PLAYING:
-          this.updatePlaying(dt);
-          break;
-        
-        case GameState.STORY:
-          this.updateSecondary(dt);
-          break;
-        
-        case GameState.CONTROLS:
-          this.updateSecondary(dt);
-          break;
-        
-        case GameState.HIGHSCORE:
-          this.updateSecondary(dt);
-          break;
+      case GameState.LOADING:
+        this.loading(dt);
+        break;
+
+      case GameState.MENU:
+        this.updateMenu(dt);
+        break;
+
+      case GameState.PLAYING:
+        this.updatePlaying(dt);
+        break;
+
+      case GameState.STORY:
+        this.updateSecondary(dt);
+        break;
+
+      case GameState.CONTROLS:
+        this.updateSecondary(dt);
+        break;
+
+      case GameState.HIGHSCORE:
+        this.updateSecondary(dt);
+        break;
 
       default:
         break;
     }
   }
 
-  updateMenu(dt) {  
+  updateMenu(dt) {
     if (globals.action.moveUp) {
-    globals.action.moveUp = false;
-    globals.menuIndex = globals.menuIndex > 0 ? globals.menuIndex - 1 : 3;
-  }
-
-  if (globals.action.moveDown) {
-    globals.action.moveDown = false;
-    globals.menuIndex = globals.menuIndex < 3 ? globals.menuIndex + 1 : 0;
-  }
-
-  if (globals.action.space) {
-    globals.action.space = false;
-
-    switch (globals.menuIndex) {
-      case 0:
-        this.gameState = GameState.STORY;
-        globals.gameState = GameState.STORY;
-        break;
-      case 1:
-        this.gameState = GameState.PLAYING;
-        globals.gameState = GameState.PLAYING;
-        break;
-      case 2:
-        this.gameState = GameState.CONTROLS;
-        globals.gameState = GameState.CONTROLS;
-        break;
-      case 3:
-        this.gameState = GameState.HIGHSCORE;
-        globals.gameState = GameState.HIGHSCORE;
-        break;
+      globals.action.moveUp = false;
+      globals.menuIndex = globals.menuIndex > 0 ? globals.menuIndex - 1 : 3;
     }
-  } 
+
+    if (globals.action.moveDown) {
+      globals.action.moveDown = false;
+      globals.menuIndex = globals.menuIndex < 3 ? globals.menuIndex + 1 : 0;
+    }
+
+    if (globals.action.space) {
+      globals.action.space = false;
+
+      switch (globals.menuIndex) {
+        case 0:
+          this.gameState = GameState.STORY;
+          globals.gameState = GameState.STORY;
+          break;
+        case 1:
+          this.gameState = GameState.PLAYING;
+          globals.gameState = GameState.PLAYING;
+          break;
+        case 2:
+          this.gameState = GameState.CONTROLS;
+          globals.gameState = GameState.CONTROLS;
+          break;
+        case 3:
+          this.gameState = GameState.HIGHSCORE;
+          globals.gameState = GameState.HIGHSCORE;
+          break;
+      }
+    }
   }
-  
-  updatePlaying(dt) {
-  }
-  
+
+  updatePlaying(dt) {}
+
   updateSecondary(dt) {
     if (globals.action.space) {
       globals.action.space = false;
@@ -131,18 +168,17 @@ class Game {
     }
   }
 
-    render() {
+  render() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.view.render();
   }
-
 }
 
-  export function initGame() {
+export async function initGame() {
   const canvas = globals.canvas;
-  const game = new Game(canvas);
+  const game = await Game.create(canvas);
   globals.gameInstance = game;
   game.execute();
 }
 
-export {Game};
+export { Game };

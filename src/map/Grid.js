@@ -6,16 +6,15 @@ export default class Grid {
     this.rows = GRID_ROWS;
     this.data = [];
 
-    this.init(); 
+    this.init();
   }
 
   init() {
-
-    for(let row = 0; row < this.rows; row++) {
-        this.data[row] = [];
-        for(let col = 0; col < this.cols; col++) {
-            this.data[row][col] = 0; 
-        }
+    for (let row = 0; row < this.rows; row++) {
+      this.data[row] = [];
+      for (let col = 0; col < this.cols; col++) {
+        this.data[row][col] = 0;
+      }
     }
   }
 
@@ -23,7 +22,7 @@ export default class Grid {
     return this.data[row][col];
   }
 
-  setCell(row, col, value) {    
+  setCell(row, col, value) {
     this.data[row][col] = value;
   }
 }

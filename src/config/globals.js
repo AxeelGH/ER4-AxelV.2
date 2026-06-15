@@ -16,8 +16,10 @@ export default {
 
   score: 0,
   highScore: 0,
-  level:1,
+  level: 1,
   lives: 3,
 
   menuIndex: 0,
+
+  grid: null,
 };

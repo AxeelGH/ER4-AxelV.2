@@ -1,10 +1,12 @@
 import globals from "./config/globals.js";
 import { GameState } from "./config/constants.js";
+import GridView from "./map/GridView.js";
 
 export class View {
   constructor(ctx, game) {
     this.ctx = ctx;
     this.game = game;
+    this.gridView = new GridView(ctx);
 
     this.menuBackground = new Image();
     this.menuBackground.src = "./assets/images/MenuBackground.png";
@@ -14,52 +16,85 @@ export class View {
 
     this.secondaryBackground = new Image();
     this.secondaryBackground.src = "./assets/images/StoryBackground.png";
+
+    this.playBackground = new Image();
+    this.playBackground.src = "./assets/images/GameBackground.png";
   }
-    render() {
+  render() {
     switch (globals.gameState) {
+      case GameState.MENU:
+        this.renderMenu();
+        break;
 
-        case GameState.MENU:
-            this.renderMenu();
-            break;
-        
-        case GameState.STORY:
-            this.renderStory();
-            break;
+      case GameState.PLAYING:
+        this.renderPlaying();
+        break;
 
-        case GameState.CONTROLS:
-            this.renderControls();
-            break;
-        case GameState.HIGHSCORE:
-            this.renderHighscore();
-            break;
+      case GameState.STORY:
+        this.renderStory();
+        break;
+
+      case GameState.CONTROLS:
+        this.renderControls();
+        break;
+      case GameState.HIGHSCORE:
+        this.renderHighscore();
+        break;
     }
   }
 
-    renderMenu() {
-        this.ctx.drawImage(this.menuBackground, 0, 0,this.ctx.canvas.width, this.ctx.canvas.height);
+  renderMenu() {
+    this.ctx.drawImage(
+      this.menuBackground,
+      0,
+      0,
+      this.ctx.canvas.width,
+      this.ctx.canvas.height,
+    );
 
-        this.ctx.drawImage(this.GameLogo, 0, 0, 200, 150);
+    this.ctx.drawImage(this.GameLogo, 0, 0, 200, 150);
 
-            const options = ["STORY", "PLAY", "CONTROLS", "HIGHSCORE"];
-            const startY = 180;
-            const spacing = 45;
+    const options = ["STORY", "PLAY", "CONTROLS", "HIGHSCORE"];
+    const startY = 180;
+    const spacing = 45;
 
-        for (let i = 0; i < options.length; i++) {
-          if (i === globals.menuIndex) {
-            this.ctx.fillStyle = "#FFD700";
-            this.ctx.font = "bold 18px dungeon";
-        } else {
-            this.ctx.fillStyle = "#FFFFFF";
-            this.ctx.font = "14px dungeon";
-        }
+    for (let i = 0; i < options.length; i++) {
+      if (i === globals.menuIndex) {
+        this.ctx.fillStyle = "#FFD700";
+        this.ctx.font = "bold 18px dungeon";
+      } else {
+        this.ctx.fillStyle = "#FFFFFF";
+        this.ctx.font = "14px dungeon";
+      }
 
-        this.ctx.textAlign = "center";
-        this.ctx.fillText(options[i], this.ctx.canvas.width / 2, startY + i * spacing);
+      this.ctx.textAlign = "center";
+      this.ctx.fillText(
+        options[i],
+        this.ctx.canvas.width / 2,
+        startY + i * spacing,
+      );
     }
-    }
-    
-renderStory() {
-    this.ctx.drawImage(this.secondaryBackground, 0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+  }
+
+  renderPlaying() {
+    this.ctx.drawImage(
+      this.playBackground,
+      0,
+      0,
+      this.ctx.canvas.width,
+      this.ctx.canvas.height,
+    );
+    this.gridView.render();
+  }
+
+  renderStory() {
+    this.ctx.drawImage(
+      this.secondaryBackground,
+      0,
+      0,
+      this.ctx.canvas.width,
+      this.ctx.canvas.height,
+    );
 
     this.ctx.fillStyle = "#eca409ff";
     this.ctx.font = "32px dungeon";
@@ -70,23 +105,23 @@ renderStory() {
     this.ctx.font = "11px dungeon";
     this.ctx.textAlign = "center";
 
-const storyLines = [
-  "X.G was walking at night",
-  "when he saw a glowing sword.",
-  "It had a rare gem called",
-  "'Flamestrosyum', known for",
-  "its magical properties.",
-  "",
-  "But Aivan had it,",
-  "a greedy merchant in the city,",
-  "well known for his shop.",
-  "",
-  "After losing a bet,",
-  "X.G lost his magical glasses.",
-  "Now he must dispel Aivan's",
-  "curse to retrieve his glasses",
-  "and claim the sword.",
-];
+    const storyLines = [
+      "X.G was walking at night",
+      "when he saw a glowing sword.",
+      "It had a rare gem called",
+      "'Flamestrosyum', known for",
+      "its magical properties.",
+      "",
+      "But Aivan had it,",
+      "a greedy merchant in the city,",
+      "well known for his shop.",
+      "",
+      "After losing a bet,",
+      "X.G lost his magical glasses.",
+      "Now he must dispel Aivan's",
+      "curse to retrieve his glasses",
+      "and claim the sword.",
+    ];
 
     let yPos = 70;
     for (let i = 0; i < storyLines.length; i++) {
@@ -98,18 +133,23 @@ const storyLines = [
     this.ctx.font = "20px dungeon";
     this.ctx.textAlign = "center";
     this.ctx.fillText("Press SPACE to return", 256, 375);
-}
+  }
 
-renderControls() {
+  renderControls() {
+    this.ctx.drawImage(
+      this.secondaryBackground,
+      0,
+      0,
+      this.ctx.canvas.width,
+      this.ctx.canvas.height,
+    );
 
-        this.ctx.drawImage(this.secondaryBackground, 0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-
-        const X = 230;
+    const X = 230;
 
     this.ctx.fillStyle = "#eca409ff";
     this.ctx.font = "32px dungeon";
     this.ctx.textAlign = "center";
-    this.ctx.fillText("CONTROLS",240, 30);
+    this.ctx.fillText("CONTROLS", 240, 30);
 
     this.ctx.font = "16px dungeon";
 
@@ -124,7 +164,7 @@ renderControls() {
     this.ctx.fillText("Move right", X, 150);
 
     this.ctx.fillStyle = "#FFD700";
-    this.ctx.fillText("UP ARROW (↑)", X , 170);
+    this.ctx.fillText("UP ARROW (↑)", X, 170);
     this.ctx.fillStyle = "#FFFFFF";
     this.ctx.fillText("Rotate piece", X, 190);
 
@@ -141,14 +181,18 @@ renderControls() {
     this.ctx.fillStyle = "#888888";
     this.ctx.font = "20px dungeon";
     this.ctx.fillText("Press SPACE to return", 256, 370);
-}
+  }
 
-    renderHighscore() {
-      this.ctx.fillStyle = "#000000";
-      this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-      this.ctx.fillStyle = "#FFFFFF";
-      this.ctx.font = "16px dungeon";
-      this.ctx.textAlign = "center";
-      this.ctx.fillText("HIGHSCORES -Press SPACE to return", this.ctx.canvas.width / 2, 200);
-}
+  renderHighscore() {
+    this.ctx.fillStyle = "#000000";
+    this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+    this.ctx.fillStyle = "#FFFFFF";
+    this.ctx.font = "16px dungeon";
+    this.ctx.textAlign = "center";
+    this.ctx.fillText(
+      "HIGHSCORES -Press SPACE to return",
+      this.ctx.canvas.width / 2,
+      200,
+    );
+  }
 }
