@@ -26,4 +26,8 @@ export default {
   menuIndex: 0,
 
   grid: null,
+
+  currentCoin: null,
+  dropTimer: 0,
+  dropInterval: 1.0,
 };

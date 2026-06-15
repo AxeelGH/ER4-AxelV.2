@@ -6,6 +6,7 @@ import Grid from "./map/Grid.js";
 import GridView from "./map/GridView.js";
 import Asset from "./assets/assets.js";
 import Chronometer from "./Chronometer.js";
+import Coin from "./sprites/Coin.js";
 
 class Game {
   constructor(canvas) {
@@ -24,6 +25,8 @@ class Game {
     globals.grid = new Grid();
     this.gridView = new GridView(this.ctx);
     globals.chrono = new Chronometer();
+
+    globals.currentCoin = new Coin();
 
     globals.action = {
       moveUp: false,
@@ -162,13 +165,30 @@ class Game {
   }
 
   updatePlaying(dt) {
-
-    if(globals.levelTime > 0){
+    if (globals.levelTime > 0) {
       globals.levelTime -= dt;
     }
-    if(globals.levelTime <= 0){
+    if (globals.levelTime <= 0) {
       this.gameState = GameState.GAME_OVER;
       globals.gameState = GameState.GAME_OVER;
+    }
+    if (!globals.currentCoin) return;
+
+    globals.currentCoin.update();
+
+    globals.dropTimer += dt;
+    if (globals.dropTimer >= globals.dropInterval) {
+      globals.dropTimer = 0;
+      globals.currentCoin.fil += 1;
+
+      if (globals.currentCoin.fil >= globals.grid.rows) {
+        globals.grid.setCell(
+          globals.grid.rows - 1,
+          globals.currentCoin.col,
+          globals.currentCoin.type + 1,
+        );
+        globals.currentCoin = new Coin();
+      }
     }
   }
 
