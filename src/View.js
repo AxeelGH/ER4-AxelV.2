@@ -61,6 +61,10 @@ export class View {
       case GameState.WIN:
         this.renderWin();
         break;
+
+      case GameState.BETWEEN_LEVELS:
+        this.renderBetweenLevels();
+        break;
     }
   }
 
@@ -217,6 +221,12 @@ export class View {
     ctx.fillText("TIME", 50, canvas.height - 320);
     ctx.fillStyle = "lightgray";
     ctx.fillText(" " + timeString, 30, canvas.height - 305);
+
+    ctx.fillStyle = "lightblue";
+    ctx.fillText("GOAL SCORE", 10, canvas.height - 290);
+    ctx.fillStyle = "lightgray";
+    ctx.textAlign = "left";
+    ctx.fillText(" " + globals.goalScore, 40, canvas.height - 275);
 
     ctx.fillStyle = "lightblue";
     ctx.fillText("LIVES", 360, 155);
@@ -412,6 +422,33 @@ export class View {
       "Press SPACE to return to menu",
       this.ctx.canvas.width / 2,
       375,
+    );
+  }
+
+  renderBetweenLevels() {
+    this.ctx.drawImage(
+      this.playBackground,
+      0,
+      0,
+      this.ctx.canvas.width,
+      this.ctx.canvas.height,
+    );
+
+    this.ctx.fillStyle = "#eca409ff";
+    this.ctx.font = "40px dungeon";
+    this.ctx.textAlign = "center";
+    this.ctx.fillText("LEVEL 2", this.ctx.canvas.width / 2, 60);
+
+    this.ctx.fillStyle = "#FFFFFF";
+    this.ctx.font = "40px dungeon";
+    this.ctx.fillText("ARE YOU READY?", this.ctx.canvas.width / 2, 210);
+
+    this.ctx.fillStyle = "#888888";
+    this.ctx.font = "16px dungeon";
+    this.ctx.fillText(
+      "Press SPACE to continue",
+      this.ctx.canvas.width / 2,
+      380,
     );
   }
 }

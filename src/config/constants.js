@@ -8,6 +8,7 @@ export const GameState = {
   HIGHSCORE: 5,
   CONTROLS: 6,
   WIN: 7,
+  BETWEEN_LEVELS: 8,
 };
 
 export const FPS = 60;

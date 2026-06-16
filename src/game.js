@@ -18,8 +18,8 @@ class Game {
 
     globals.ctx = this.ctx;
 
-    this.gameState = GameState.WIN;
-    globals.gameState = GameState.WIN;
+    this.gameState = GameState.BETWEEN_LEVELS;
+    globals.gameState = GameState.BETWEEN_LEVELS;
     console.log("Game State: LOADING");
 
     this.inputManager = new Events();
@@ -140,6 +140,10 @@ class Game {
         this.updateWin(dt);
         break;
 
+      case GameState.BETWEEN_LEVELS:
+        this.updateBetweenLevels(dt);
+        break;
+
       default:
         break;
     }
@@ -168,6 +172,10 @@ class Game {
           this.gameState = GameState.PLAYING;
           globals.gameState = GameState.PLAYING;
           globals.levelTime = 120;
+          globals.currentLevel = 1;
+          globals.goalScore = 1000;
+          globals.score = 900;
+          globals.grid.init();
           break;
         case 2:
           this.gameState = GameState.CONTROLS;
@@ -358,9 +366,9 @@ class Game {
       globals.score = globals.score + 300;
     }
 
-    if (globals.score >= 1000) {
-      this.gameState = GameState.WIN;
-      globals.gameState = GameState.WIN;
+    if (globals.currentLevel === 1 && globals.score >= globals.goalScore) {
+      this.gameState = GameState.BETWEEN_LEVELS;
+      globals.gameState = GameState.BETWEEN_LEVELS;
     }
   }
 
@@ -387,6 +395,38 @@ class Game {
     }
   }
 
+  startLevel2() {
+    globals.currentLevel = 2;
+    globals.goalScore = 1500;
+    globals.levelTime = 120;
+
+    globals.grid.init();
+
+    globals.enemies = [];
+    const goblin = new Goblin();
+    goblin.maxRocks = 4;
+    goblin.moveInterval = 0.3;
+    const bat1 = new Bat();
+    const bat2 = new Bat();
+    bat1.moveInterval = 0.2;
+    bat2.moveInterval = 0.2;
+    globals.enemies.push(goblin);
+    globals.enemies.push(bat1);
+    globals.enemies.push(bat2);
+    globals.goblinRef = goblin;
+
+    globals.currentCoin = new Coin();
+    globals.dropTimer = 0;
+  }
+
+  updateBetweenLevels(dt) {
+    if (globals.action.space) {
+      globals.action.space = false;
+      this.startLevel2();
+      this.gameState = GameState.PLAYING;
+      globals.gameState = GameState.PLAYING;
+    }
+  }
   updateSecondary(dt) {
     if (globals.action.space) {
       globals.action.space = false;

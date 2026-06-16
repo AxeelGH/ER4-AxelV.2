@@ -17,7 +17,7 @@ export default {
   score: 0,
   highScore: 0,
   currentLevel: 1,
-  goalScore: 0,
+  goalScore: 1000,
   lives: 3,
   chrono: null,
   currentPowerUP: "NONE",
