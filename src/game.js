@@ -179,7 +179,7 @@ class Game {
           globals.powerUp = null;
           globals.powerUpHeld = null;
           globals.powerUpSpawnTimer = 0;
-          globals.curseValue = 40;
+          globals.curseValue = 0;
           globals.curseActive = false;
           globals.dropInterval = globals.dropBaseInterval;
           globals.grid.init();
@@ -299,6 +299,7 @@ class Game {
             globals.currentCoin.explode();
           }
           globals.lives--;
+          globals.curseValue += 10;
           return;
         }
       }
@@ -319,6 +320,7 @@ class Game {
       } else if (globals.grid.data[nextFil][coin.col] === 4) {
         coin.explode();
         globals.lives--;
+        globals.curseValue += 10;
         this.reduceGoblinRockCount();
         globals.grid.setCell(nextFil, coin.col, 0);
       } else if (globals.grid.data[nextFil][coin.col] !== 0) {

@@ -367,19 +367,14 @@ export class View {
     this.ctx.fillText("Move right", X, 150);
 
     this.ctx.fillStyle = "#FFD700";
-    this.ctx.fillText("UP ARROW (↑)", X, 170);
+    this.ctx.fillText("DOWN ARROW (↓)", X, 180);
     this.ctx.fillStyle = "#FFFFFF";
-    this.ctx.fillText("Rotate piece", X, 190);
+    this.ctx.fillText("Fast drop", X, 200);
 
     this.ctx.fillStyle = "#FFD700";
-    this.ctx.fillText("DOWN ARROW (↓)", X, 210);
+    this.ctx.fillText("SPACE", X, 280);
     this.ctx.fillStyle = "#FFFFFF";
-    this.ctx.fillText("Fast drop", X, 230);
-
-    this.ctx.fillStyle = "#FFD700";
-    this.ctx.fillText("SPACE", X, 260);
-    this.ctx.fillStyle = "#FFFFFF";
-    this.ctx.fillText("Select / PowerUp", X, 280);
+    this.ctx.fillText("Select / PowerUp", X, 300);
 
     this.ctx.fillStyle = "#888888";
     this.ctx.font = "20px dungeon";
