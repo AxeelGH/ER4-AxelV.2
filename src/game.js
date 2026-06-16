@@ -459,6 +459,7 @@ class Game {
           }
         }
       }
+      globals.goblinRef.rockCount = 0;
     } else if (globals.powerUpHeld.type === SpriteID.POWERUP_GOLD) {
       for (let row = 0; row < globals.grid.rows; row++) {
         for (let col = 0; col < globals.grid.cols; col++) {
