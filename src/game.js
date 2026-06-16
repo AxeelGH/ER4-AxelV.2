@@ -187,9 +187,20 @@ class Game {
       const coin = globals.currentCoin;
       const nextFil = coin.fil + 1;
 
-      if (nextFil >= globals.grid.rows ||
-        globals.grid.data[nextFil][coin.col] !== 0
-      ) {
+      if (nextFil >= globals.grid.rows) {
+        globals.grid.setCell(coin.fil, coin.col, coin.type + 1);
+        globals.currentCoin = new Coin();
+      } else if (globals.grid.data[nextFil][coin.col] === 4) {
+        globals.lives = globals.lives - 1;
+        globals.goblin.rockCount = globals.goblin.rockCount - 1;
+        globals.grid.setCell(nextFil, coin.col, 0);
+        globals.currentCoin = new Coin();
+
+        if (globals.lives <= 0) {
+          this.gameState = GameState.GAME_OVER;
+          globals.gameState = GameState.GAME_OVER;
+        }
+      } else if (globals.grid.data[nextFil][coin.col] !== 0) {
         globals.grid.setCell(coin.fil, coin.col, coin.type + 1);
         globals.currentCoin = new Coin();
       } else {
