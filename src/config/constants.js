@@ -35,6 +35,8 @@ export const SpriteID = {
     ROCK: 1,
     GOBLIN: 2,
     BAT: 3,
+    POWERUP_BOMB: 4,
+    POWERUP_GOLD: 5,
 };
 
 export const State = {
@@ -44,4 +46,7 @@ export const State = {
 
     BAT_LEFT: 0,
     BAT_RIGHT: 1,
+
+    POWERUP_BOMB: 4,
+    POWERUP_GOLD:5,
 }
