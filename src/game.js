@@ -1,5 +1,5 @@
 import globals from "./config/globals.js";
-import { GameState, SpriteID, State, ALPHABET } from "./config/constants.js";
+import { GameState, SpriteID, State, ALPHABET, Sound } from "./config/constants.js";
 import { Events } from "./events/Events.js";
 import { View } from "./View.js";
 import Grid from "./map/Grid.js";
@@ -20,8 +20,8 @@ class Game {
 
     globals.ctx = this.ctx;
 
-    this.gameState = GameState.MENU;
-    globals.gameState = GameState.MENU;
+    this.gameState = GameState.INTRO;
+    globals.gameState = GameState.INTRO;
     console.log("Game State: LOADING");
 
     this.inputManager = new Events();
@@ -30,6 +30,7 @@ class Game {
     globals.grid = new Grid();
     this.gridView = new GridView(this.ctx);
     globals.chrono = new Chronometer();
+    globals.currentSound = Sound.NO_SOUND;
 
     globals.currentCoin = new Coin();
     globals.enemies = [];
@@ -114,6 +115,10 @@ class Game {
         this.loading(dt);
         break;
 
+      case GameState.INTRO:
+        this.updateIntro(dt);
+        break;
+
       case GameState.MENU:
         this.updateMenu(dt);
         break;
@@ -160,6 +165,10 @@ class Game {
   }
 
   updateMenu(dt) {
+
+    globals.sounds[Sound.SECONDARY_MUSIC].play();
+    globals.sounds[Sound.SECONDARY_MUSIC].volume = 0.5;
+
     if (globals.action.moveUp) {
       globals.action.moveUp = false;
       globals.menuIndex = globals.menuIndex > 0 ? globals.menuIndex - 1 : 3;
@@ -179,6 +188,8 @@ class Game {
           globals.gameState = GameState.STORY;
           break;
         case 1:
+          globals.sounds[Sound.GAME_MUSIC].play();
+          globals.sounds[Sound.GAME_MUSIC].volume = 0.5;
           this.gameState = GameState.PLAYING;
           globals.gameState = GameState.PLAYING;
           globals.levelTime = 120;
@@ -725,6 +736,14 @@ class Game {
     globals.loadingHighScores = false;
     this.gameState = GameState.LOAD_HIGH_SCORES;
     globals.gameState = GameState.LOAD_HIGH_SCORES;
+  }
+
+  updateIntro(){
+        if (globals.action.space) {
+      globals.action.space = false;
+      this.gameState = GameState.MENU;
+      globals.gameState = GameState.MENU;
+    }
   }
 
   render() {

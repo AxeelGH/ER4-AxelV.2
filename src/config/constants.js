@@ -11,6 +11,7 @@ export const GameState = {
   BETWEEN_LEVELS: 8,
   LOAD_HIGH_SCORES: 9,
   ENTER_NAME: 10,
+  INTRO: 11,
 };
 
 export const FPS = 60;
@@ -57,3 +58,11 @@ export const ALPHABET = [
   'A','B','C','D','E','F','G','H','I','J','K','L','M',
   'N','O','P','Q','R','S','T','U','V','W','X','Y','Z'
 ];
+
+export const Sound = {
+  NO_MUSIC: -1,
+  SECONDARY_MUSIC: 0,
+  GAME_MUSIC: 1,
+  STORY_MUSIC: 2,
+
+};

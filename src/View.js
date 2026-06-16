@@ -39,6 +39,10 @@ export class View {
   }
   render() {
     switch (globals.gameState) {
+      case GameState.INTRO:
+        this.renderIntro();
+        break;
+
       case GameState.MENU:
         this.renderMenu();
         break;
@@ -560,7 +564,7 @@ export class View {
   }
 
   renderWin() {
-    globals.ctx.drawImage(
+    this.ctx.drawImage(
       this.winBackground,
       0,
       0,
@@ -612,6 +616,22 @@ export class View {
     this.ctx.fillText(
       "Press SPACE to continue",
       this.ctx.canvas.width / 2,
+      380,
+    );
+  }
+
+  renderIntro() {
+    this.ctx.drawImage(this.GameLogo, 150, 0, 250, 200);
+
+    this.ctx.fillStyle = "#FFFFFF";
+    this.ctx.font = "40px dungeon";
+    this.ctx.fillText("ARE YOU READY?", 10, 280);
+
+        this.ctx.fillStyle = "#888888";
+    this.ctx.font = "16px dungeon";
+    this.ctx.fillText(
+      "Press SPACE to continue",
+      80,
       380,
     );
   }

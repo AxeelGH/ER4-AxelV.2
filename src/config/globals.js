@@ -57,4 +57,7 @@ export default {
   newScoreName: "",
   highScoreReady: false,
   highScoreDelay: 0,
+
+  sounds: [],
+  currentSound: -1,
 };
