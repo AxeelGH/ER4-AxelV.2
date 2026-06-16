@@ -230,10 +230,12 @@ class Game {
 
       if (nextFil >= globals.grid.rows) {
         globals.grid.setCell(coin.fil, coin.col, coin.type + 1);
+        this.checkMatches(coin.fil, coin.col);
         globals.currentCoin = new Coin();
+        globals.dropTimer = 0;
       } else if (globals.grid.data[nextFil][coin.col] === 4) {
         coin.explode();
-        globals.lives --;
+        globals.lives--;
         this.reduceGoblinRockCount();
         globals.grid.setCell(nextFil, coin.col, 0);
 
@@ -243,7 +245,9 @@ class Game {
         }
       } else if (globals.grid.data[nextFil][coin.col] !== 0) {
         globals.grid.setCell(coin.fil, coin.col, coin.type + 1);
+        this.checkMatches(coin.fil,coin.col);
         globals.currentCoin = new Coin();
+        globals.dropTimer = 0;
       } else {
         coin.fil = nextFil;
       }
@@ -255,6 +259,89 @@ class Game {
       if (globals.enemies[i].id === SpriteID.GOBLIN) {
         globals.enemies[i].rockCount = globals.enemies[i].rockCount - 1;
       }
+    }
+  }
+
+  checkMatches(row, col) {
+    const type = globals.grid.data[row][col];
+    if (type === 0 || type === 4) return;
+
+    let count = 1;
+
+    let c = col - 1;
+    while (c >= 0 && globals.grid.data[row][c] === type) {
+      count++;
+      c--;
+    }
+
+    c = col + 1;
+    while (c < globals.grid.cols && globals.grid.data[row][c] === type) {
+      count++;
+      c++;
+    }
+
+    if (count >= 3) {
+      let start = col;
+      while (start > 0 && globals.grid.data[row][start - 1] === type) {
+        start--;
+      }
+      let end = col;
+      while (
+        end < globals.grid.cols - 1 &&
+        globals.grid.data[row][end + 1] === type
+      ) {
+        end++;
+      }
+      for (let x = start; x <= end; x++) {
+        globals.grid.setCell(row, x, 0);
+      }
+      this.addPoints(count);
+    }
+
+    count = 1;
+
+    let r = row - 1;
+    while (r >= 0 && globals.grid.data[r][col] === type) {
+      count++;
+      r--;
+    }
+    r = row + 1;
+    while (r < globals.grid.rows && globals.grid.data[r][col] === type) {
+      count++;
+      r++;
+    }
+
+    if (count >= 3) {
+      let start = row;
+      while (start > 0 && globals.grid.data[start - 1][col] === type) {
+        start--;
+      }
+      let end = row;
+      while (
+        end < globals.grid.rows - 1 &&
+        globals.grid.data[end + 1][col] === type
+      ) {
+        end++;
+      }
+      for (let y = start; y <= end; y++) {
+        globals.grid.setCell(y, col, 0);
+      }
+      this.addPoints(count);
+    }
+  }
+
+  addPoints(amount) {
+    if (amount === 3) {
+      globals.score = globals.score + 100;
+    } else if (amount === 4) {
+      globals.score = globals.score + 200;
+    } else {
+      globals.score = globals.score + 300;
+    }
+
+    if (globals.score >= 1000) {
+      this.gameState = GameState.WIN;
+      globals.gameState = GameState.WIN;
     }
   }
 
