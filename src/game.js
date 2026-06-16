@@ -229,8 +229,8 @@ class Game {
     }
 
     if(globals.curseValue >= 50 && !globals.curseActive) {
-      globals.dropInterval = 0.1;
-      globals.curseActive = true;
+      globals.dropInterval = 0.35;
+      globals.curseActive = true; 
     }
 
     if(globals.curseValue < 50 && globals.curseActive) {
