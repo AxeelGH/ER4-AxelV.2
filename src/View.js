@@ -279,6 +279,21 @@ export class View {
 
     const img = globals.tileSets[0];
     this.ctx.drawImage(img, 0, 14 * 32, 112, 32, 10, 140, 112, 32);
+
+    const faceFrames = 7;
+    const faceFrame = Math.min(
+    faceFrames - 1,
+    Math.floor((globals.curseValue / globals.maxCurse) * faceFrames)
+);
+
+this.ctx.drawImage(
+    img,
+    faceFrame * 32,  
+    15 * 32,        
+    32, 32,         
+    40, 280,        
+    64, 64           
+); 
   }
 
   renderLives(x, y, lives) {
