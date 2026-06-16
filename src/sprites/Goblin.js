@@ -2,7 +2,14 @@ import Sprite from "./Sprite.js";
 import ImageSet from "./ImageSet.js";
 import Frames from "./Frames.js";
 import globals from "../config/globals.js";
-import { GRID_COLS, GRID_ROWS, GRID_ORIGIN_X, GRID_ORIGIN_Y, CELL_SIZE, SpriteID } from "../config/constants.js";
+import {
+  GRID_COLS,
+  GRID_ROWS,
+  GRID_ORIGIN_X,
+  GRID_ORIGIN_Y,
+  CELL_SIZE,
+  SpriteID,
+} from "../config/constants.js";
 
 export default class Goblin extends Sprite {
   constructor() {
@@ -52,22 +59,22 @@ export default class Goblin extends Sprite {
     }
   }
 
-spawnRock() {
+  spawnRock() {
     if (this.rockCount >= this.maxRocks) return;
 
     const minFil = 5;
     let tries = 0;
 
     while (tries < 20) {
-        const fil = Math.floor(Math.random() * (GRID_ROWS - minFil)) + minFil;
-        if (globals.grid.data[fil][this.col] === 0) {
-            globals.grid.setCell(fil, this.col, 4);
-            this.rockCount++;
-            return;
-        }
-        tries++;
+      const fil = Math.floor(Math.random() * (GRID_ROWS - minFil)) + minFil;
+      if (globals.grid.data[fil][this.col] === 0) {
+        globals.grid.setCell(fil, this.col, 4);
+        this.rockCount++;
+        return;
+      }
+      tries++;
     }
-}
+  }
 
   draw(ctx) {
     const img = globals.tileSets[0];

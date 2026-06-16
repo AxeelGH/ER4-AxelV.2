@@ -613,7 +613,11 @@ export class View {
     this.ctx.fillStyle = "#eca409ff";
     this.ctx.font = "40px dungeon";
     this.ctx.textAlign = "center";
-    this.ctx.fillText("LEVEL "+ (globals.currentLevel + 1), this.ctx.canvas.width / 2, 60);
+    this.ctx.fillText(
+      "LEVEL " + (globals.currentLevel + 1),
+      this.ctx.canvas.width / 2,
+      60,
+    );
 
     this.ctx.fillStyle = "#FFFFFF";
     this.ctx.font = "40px dungeon";

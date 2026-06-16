@@ -51,4 +51,4 @@ export default class Coin {
       globals.dropInterval = globals.dropBaseInterval;
     }
   }
-} 
+}

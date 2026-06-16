@@ -2,7 +2,15 @@ import Sprite from "./Sprite.js";
 import ImageSet from "./ImageSet.js";
 import Frames from "./Frames.js";
 import globals from "../config/globals.js";
-import { GRID_COLS, GRID_ROWS, GRID_ORIGIN_X, GRID_ORIGIN_Y, CELL_SIZE, SpriteID, State } from "../config/constants.js";
+import {
+  GRID_COLS,
+  GRID_ROWS,
+  GRID_ORIGIN_X,
+  GRID_ORIGIN_Y,
+  CELL_SIZE,
+  SpriteID,
+  State,
+} from "../config/constants.js";
 
 export default class Bat extends Sprite {
   constructor() {
@@ -11,10 +19,10 @@ export default class Bat extends Sprite {
     this.state = State.BAT_RIGHT;
 
     this.col = 0;
-    this.fil = Math.floor(Math.random() * (8 - 4 + 1)) + 4;;             
-    this.direction = 1;        
+    this.fil = Math.floor(Math.random() * (8 - 4 + 1)) + 4;
+    this.direction = 1;
     this.moveTimer = 0;
-    this.moveInterval = 0.4;   
+    this.moveInterval = 0.4;
 
     this.imageSet = new ImageSet(9, 0, 32, 32, 0, 0, 32, 32);
     this.frames = new Frames(4, 8);

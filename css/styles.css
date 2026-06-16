@@ -19,6 +19,6 @@ body {
 }
 
 @font-face {
-    font-family: dungeon;
-    src: url(../assets/fonts/dungeon-mode.ttf);
+  font-family: dungeon;
+  src: url(../assets/fonts/dungeon-mode.ttf);
 }

@@ -34,25 +34,24 @@ export const GRID_ORIGIN_Y = 32;
 export const COIN_SIZE = 20;
 
 export const SpriteID = {
-    COIN: 0,
-    ROCK: 1,
-    GOBLIN: 2,
-    BAT: 3,
-    POWERUP_BOMB: 4,
-    POWERUP_GOLD: 5,
+  COIN: 0,
+  ROCK: 1,
+  GOBLIN: 2,
+  BAT: 3,
+  POWERUP_BOMB: 4,
+  POWERUP_GOLD: 5,
 };
 
 export const State = {
-    
-    COIN: 0,
-    EXPLOSION: 1,
+  COIN: 0,
+  EXPLOSION: 1,
 
-    BAT_LEFT: 0,
-    BAT_RIGHT: 1,
+  BAT_LEFT: 0,
+  BAT_RIGHT: 1,
 
-    POWERUP_BOMB: 4,
-    POWERUP_GOLD:5,
-}
+  POWERUP_BOMB: 4,
+  POWERUP_GOLD: 5,
+};
 
 export const ALPHABET = [
   'A','B','C','D','E','F','G','H','I','J','K','L','M',
@@ -67,5 +66,4 @@ export const Sound = {
 
   COIN_EFFECT: 3,
   POWERUP_EFFECT: 4,
-
 };
