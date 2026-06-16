@@ -37,15 +37,15 @@ export default class GridView {
   renderBorder() {
     const img = globals.tileSets[1];
 
-    const DRAW_SIZE = 16; 
+    const DRAW_SIZE = 16;
 
     for (let fila = 0; fila < levelData.length; fila++) {
       for (let col = 0; col < levelData[fila].length; col++) {
         const value = levelData[fila][col];
         if (value !== 0) {
-            const xTile = (value - 1) * TILE_SIZE;  
-            const xPos = GRID_ORIGIN_X - DRAW_SIZE + col * DRAW_SIZE;  
-            const yPos = GRID_ORIGIN_Y - DRAW_SIZE + fila * DRAW_SIZE;
+          const xTile = (value - 1) * TILE_SIZE;
+          const xPos = GRID_ORIGIN_X - DRAW_SIZE + col * DRAW_SIZE;
+          const yPos = GRID_ORIGIN_Y - DRAW_SIZE + fila * DRAW_SIZE;
 
           this.ctx.drawImage(
             img,
