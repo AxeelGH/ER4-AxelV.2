@@ -193,6 +193,11 @@ class Game {
     if (globals.levelTime > 0) {
       globals.levelTime -= dt;
     }
+    if (globals.lives <= 0) {
+      this.gameState = GameState.GAME_OVER;
+      globals.gameState = GameState.GAME_OVER;
+      return;
+    }
     if (globals.matchExploding) {
       globals.matchTimer += dt;
       if (globals.matchTimer >= 0.4) {
@@ -262,10 +267,6 @@ class Game {
         this.reduceGoblinRockCount();
         globals.grid.setCell(nextFil, coin.col, 0);
 
-        if (globals.lives <= 0) {
-          this.gameState = GameState.GAME_OVER;
-          globals.gameState = GameState.GAME_OVER;
-        }
       } else if (globals.grid.data[nextFil][coin.col] !== 0) {
         globals.grid.setCell(coin.fil, coin.col, coin.type + 1);
         this.checkMatches(coin.fil, coin.col);
@@ -364,6 +365,10 @@ class Game {
       globals.score = globals.score + 200;
     } else {
       globals.score = globals.score + 300;
+    }
+
+    if(globals.score > globals.highScore) {
+      globals.highScore = globals.score;
     }
 
     if (globals.currentLevel === 1 && globals.score >= globals.goalScore) {
