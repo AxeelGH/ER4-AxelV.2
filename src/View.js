@@ -97,7 +97,7 @@ export class View {
       const coin = globals.currentCoin;
       const pos = this.gridView.cellToPixel(coin.col, coin.fil);
       const srcX = coin.frames.frameCounter * 32;
-      const srcY = (1 + coin.type) * 32 + 2;
+      const srcY = (coin.type) * 32;
 
       this.ctx.drawImage(
         img,
@@ -117,7 +117,7 @@ export class View {
         if (globals.grid.data[fil][col] !== 0) {
           const type = globals.grid.data[fil][col] - 1;
           const pos = this.gridView.cellToPixel(col, fil);
-          const srcY = (1 + type) * 32 + 2;
+          const srcY = (type) * 32;
 
           this.ctx.drawImage(
             img,
@@ -134,6 +134,7 @@ export class View {
       }
     }
   }
+
   renderHud() {
     const chrono = globals.chrono;
     const timeString = chrono.getTime(globals.levelTime);

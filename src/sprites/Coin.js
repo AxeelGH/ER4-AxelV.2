@@ -9,7 +9,7 @@ export default class Coin {
     this.fil = 0;
     this.type = Math.floor(Math.random() * 3);
 
-    this.imageSet = new ImageSet(1 + this.type, 0, 32, 32, 0, 0, 32);
+    this.imageSet = new ImageSet(1 + this.type, 0, 32, 32, 0, 0, 32, 32);
     this.frames = new Frames(14, 3);
   }
 
