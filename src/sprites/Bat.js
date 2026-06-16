@@ -11,7 +11,7 @@ export default class Bat extends Sprite {
     this.state = State.BAT_RIGHT;
 
     this.col = 0;
-    this.fil = 3;             
+    this.fil = Math.floor(Math.random() * (8 - 4 + 1)) + 4;;             
     this.direction = 1;        
     this.moveTimer = 0;
     this.moveInterval = 0.4;   

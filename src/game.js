@@ -203,6 +203,7 @@ class Game {
           globals.currentCoin.col === enemy.col &&
           globals.currentCoin.fil === enemy.fil
         ) {
+          globals.lives --;
           globals.currentCoin = new Coin();
           return;
         }
