@@ -1,5 +1,5 @@
 import globals from "../config/globals.js";
-import { GRID_COLS, SpriteID } from "../config/constants.js";
+import { GRID_COLS, SpriteID, State } from "../config/constants.js";
 import Frames from "./Frames.js";
 import ImageSet from "./ImageSet.js";
 
@@ -9,6 +9,9 @@ export default class Coin {
     this.fil = 0;
     this.type = Math.floor(Math.random() * 3);
     this.id = SpriteID.COIN;
+    this.state = State.COIN;
+
+    this.explosionTimer = 0;
 
     this.imageSet = new ImageSet(1 + this.type, 0, 32, 32, 0, 0, 32, 32);
     this.frames = new Frames(14, 3);
@@ -16,7 +19,16 @@ export default class Coin {
 
   update() {
     this.frames.update();
+    if (this.state === State.EXPLOSION) {
+      return;
+    }
     this.readKeyboard();
+  }
+
+  explode() {
+    this.state = State.EXPLOSION;
+    this.explosionTimer = 0;
+    this.frames.reset();
   }
 
   readKeyboard() {

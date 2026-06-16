@@ -1,5 +1,5 @@
 import globals from "./config/globals.js";
-import { GameState, SpriteID } from "./config/constants.js";
+import { GameState, SpriteID, State } from "./config/constants.js";
 import { Events } from "./events/Events.js";
 import { View } from "./View.js";
 import Grid from "./map/Grid.js";
@@ -191,6 +191,15 @@ class Game {
     }
     if (!globals.currentCoin) return;
 
+    if (globals.currentCoin.state === State.EXPLOSION) {
+      globals.currentCoin.explosionTimer += dt;
+      globals.currentCoin.frames.update();
+      if (globals.currentCoin.explosionTimer >= 0.4) {
+        globals.currentCoin = new Coin();
+      }
+      return;
+    }
+
     globals.currentCoin.update();
     for (let i = 0; i < globals.enemies.length; i++) {
       globals.enemies[i].update(dt);
@@ -203,8 +212,10 @@ class Game {
           globals.currentCoin.col === enemy.col &&
           globals.currentCoin.fil === enemy.fil
         ) {
-          globals.lives --;
-          globals.currentCoin = new Coin();
+          if (!globals.currentCoin.exploding) {
+            globals.currentCoin.explode();
+          }
+          globals.lives--;
           return;
         }
       }
@@ -221,10 +232,10 @@ class Game {
         globals.grid.setCell(coin.fil, coin.col, coin.type + 1);
         globals.currentCoin = new Coin();
       } else if (globals.grid.data[nextFil][coin.col] === 4) {
-        globals.lives = globals.lives - 1;
+        coin.explode();
+        globals.lives --;
         this.reduceGoblinRockCount();
         globals.grid.setCell(nextFil, coin.col, 0);
-        globals.currentCoin = new Coin();
 
         if (globals.lives <= 0) {
           this.gameState = GameState.GAME_OVER;

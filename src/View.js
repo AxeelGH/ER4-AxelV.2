@@ -1,5 +1,5 @@
 import globals from "./config/globals.js";
-import { GameState, CELL_SIZE, COIN_SIZE } from "./config/constants.js";
+import { GameState, CELL_SIZE, COIN_SIZE, SpriteID, State } from "./config/constants.js";
 import GridView from "./map/GridView.js";
 import Chronometer from "./Chronometer.js";
 
@@ -108,25 +108,30 @@ export class View {
   }
 
   renderGridContent() {
-    const img = globals.tileSets[0];
+const img = globals.tileSets[0];
 
-    if (globals.currentCoin) {
-      const coin = globals.currentCoin;
-      const pos = this.gridView.cellToPixel(coin.col, coin.fil);
-      const srcX = coin.frames.frameCounter * 32;
-      const srcY = coin.type * 32;
-      this.ctx.drawImage(
-        img,
-        srcX,
-        srcY,
-        32,
-        32,
-        pos.x,
-        pos.y,
-        COIN_SIZE,
-        COIN_SIZE,
-      );
-    }
+if (globals.currentCoin) {
+  const coin = globals.currentCoin;
+  const pos = this.gridView.cellToPixel(coin.col, coin.fil);
+  const srcX = coin.frames.frameCounter * 32;
+
+  let srcY = coin.type * 32;
+  if (coin.state === State.EXPLOSION) {
+    srcY = 3 * 32;
+  }
+
+  this.ctx.drawImage(
+    img,
+    srcX,
+    srcY,
+    32,
+    32,
+    pos.x,
+    pos.y,
+    COIN_SIZE,
+    COIN_SIZE,
+  );
+}
 
     for (let fil = 0; fil < globals.grid.rows; fil++) {
       for (let col = 0; col < globals.grid.cols; col++) {
