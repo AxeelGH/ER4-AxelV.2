@@ -186,19 +186,20 @@ class Game {
       globals.levelTime -= dt;
     }
     if (globals.matchExploding) {
-    globals.matchTimer += dt;
-    if (globals.matchTimer >= 0.4) {
+      globals.matchTimer += dt;
+      if (globals.matchTimer >= 0.4) {
         for (let row = 0; row < globals.grid.rows; row++) {
-            for (let col = 0; col < globals.grid.cols; col++) {
-                if (globals.grid.data[row][col] === 5) {
-                    globals.grid.setCell(row, col, 0);
-                }
+          for (let col = 0; col < globals.grid.cols; col++) {
+            if (globals.grid.data[row][col] === 5) {
+              globals.grid.setCell(row, col, 0);
             }
+          }
         }
+        this.applyGravity();
         globals.matchExploding = false;
+      }
+      return;
     }
-    return;
-}
     if (globals.levelTime <= 0) {
       this.gameState = GameState.GAME_OVER;
       globals.gameState = GameState.GAME_OVER;
@@ -259,7 +260,7 @@ class Game {
         }
       } else if (globals.grid.data[nextFil][coin.col] !== 0) {
         globals.grid.setCell(coin.fil, coin.col, coin.type + 1);
-        this.checkMatches(coin.fil,coin.col);
+        this.checkMatches(coin.fil, coin.col);
         globals.currentCoin = new Coin();
         globals.dropTimer = 0;
       } else {
@@ -360,6 +361,29 @@ class Game {
     if (globals.score >= 1000) {
       this.gameState = GameState.WIN;
       globals.gameState = GameState.WIN;
+    }
+  }
+
+  applyGravity() {
+    for (let col = 0; col < globals.grid.cols; col++) {
+      for (let row = globals.grid.rows - 1; row >= 0; row--) {
+        const value = globals.grid.data[row][col];
+
+        if (value !== 0 && value !== 4) {
+          let newRow = row;
+          while (
+            newRow + 1 < globals.grid.rows &&
+            globals.grid.data[newRow + 1][col] === 0
+          ) {
+            newRow++;
+          }
+
+          if (newRow !== row) {
+            globals.grid.setCell(newRow, col, value);
+            globals.grid.setCell(row, col, 0);
+          }
+        }
+      }
     }
   }
 

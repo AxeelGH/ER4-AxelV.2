@@ -17,6 +17,7 @@ export default {
   score: 0,
   highScore: 0,
   currentLevel: 1,
+  goalScore: 0,
   lives: 3,
   chrono: null,
   currentPowerUP: "NONE",
@@ -32,4 +33,7 @@ export default {
   dropInterval: 1.0,
 
   enemies: [],
+
+  matchTimer:0,
+  matchExploding:false,
 };
