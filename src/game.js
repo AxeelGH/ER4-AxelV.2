@@ -179,6 +179,9 @@ class Game {
           globals.powerUp = null;
           globals.powerUpHeld = null;
           globals.powerUpSpawnTimer = 0;
+          globals.curseValue = 40;
+          globals.curseActive = false;
+          globals.dropInterval = globals.dropBaseInterval;
           globals.grid.init();
           break;
         case 2:
@@ -217,10 +220,29 @@ class Game {
       }
       return;
     }
+
+    globals.curseValue += globals.curseRate * dt;
+    if (globals.curseValue >= globals.maxCurse) {
+      this.gameState = GameState.GAME_OVER;
+      globals.gameState = GameState.GAME_OVER;
+      return;
+    }
+
+    if(globals.curseValue >= 50 && !globals.curseActive) {
+      globals.dropInterval = 0.1;
+      globals.curseActive = true;
+    }
+
+    if(globals.curseValue < 50 && globals.curseActive) {
+      globals.curseActive = false;
+      globals.dropInterval = globals.dropBaseInterval;
+    }
+
     if (globals.levelTime <= 0) {
       this.gameState = GameState.GAME_OVER;
       globals.gameState = GameState.GAME_OVER;
     }
+
     if (!globals.currentCoin) return;
 
     if (globals.currentCoin.state === State.EXPLOSION) {
@@ -391,13 +413,20 @@ class Game {
   }
 
   addPoints(amount) {
+
+    let decreaseCurse = 0;
     if (amount === 3) {
       globals.score = globals.score + 100;
+      decreaseCurse = 10;
     } else if (amount === 4) {
       globals.score = globals.score + 200;
+      decreaseCurse = 20;
     } else {
       globals.score = globals.score + 300;
+      decreaseCurse = 30;
     }
+
+    globals.curseValue -= decreaseCurse;
 
     if (globals.score > globals.highScore) {
       globals.highScore = globals.score;
@@ -480,6 +509,7 @@ class Game {
     globals.levelTime = 120;
     globals.powerUp = null;
     globals.powerUpSpawnTimer = 0;
+    globals.curseValue = 0;
 
     globals.grid.init();
 

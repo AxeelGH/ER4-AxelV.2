@@ -48,7 +48,7 @@ export default class Coin {
     if (globals.action.moveDown) {
       globals.dropInterval = 0.1;
     } else {
-      globals.dropInterval = 1.0;
+      globals.dropInterval = 0.7;
     }
   }
 }

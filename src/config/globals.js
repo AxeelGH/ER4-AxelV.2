@@ -30,7 +30,8 @@ export default {
 
   currentCoin: null,
   dropTimer: 0,
-  dropInterval: 1.0,
+  dropInterval: 0.7,
+  dropBaseInterval: 0.7,
 
   enemies: [],
 
@@ -40,5 +41,10 @@ export default {
   powerUp:null,
   powerUpHeld: null,
   powerUpSpawnTimer: 0,
+
+  maxCurse: 100,
+  curseValue: 0,
+  curseRate: 1.5,
+  curseActive: false,
 
 };

@@ -266,6 +266,19 @@ export class View {
       ctx.fillStyle = "lightgray";
       ctx.fillText("NONE", 360, 260);
     }
+
+    ctx.fillStyle = "lightblue";
+    ctx.font = "16px dungeon";
+    ctx.fillText("CURSE BAR", 10, canvas.height - 250);
+
+    const currentCurse = Math.min(1,globals.curseValue/globals.maxCurse);
+
+    this.ctx.fillStyle = "red";
+    const fillWidth = (85)*currentCurse;
+    this.ctx.fillRect(25,155,fillWidth,10); 
+
+    const img = globals.tileSets[0];
+    this.ctx.drawImage(img, 0, 14 * 32, 112, 32, 10, 140, 112, 32);
   }
 
   renderLives(x, y, lives) {
