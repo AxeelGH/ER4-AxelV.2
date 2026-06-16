@@ -26,8 +26,8 @@ class Game {
 
     globals.ctx = this.ctx;
 
-    this.gameState = GameState.WIN;
-    globals.gameState = GameState.WIN;
+    this.gameState = GameState.INTRO;
+    globals.gameState = GameState.INTRO;
     console.log("Game State: LOADING");
 
     this.inputManager = new Events();
@@ -201,7 +201,7 @@ class Game {
           globals.levelTime = 120;
           globals.currentLevel = 1;
           globals.goalScore = 1000;
-          globals.score = 1400;
+          globals.score = 0;
           globals.powerUp = null;
           globals.powerUpHeld = null;
           globals.powerUpSpawnTimer = 0;
@@ -326,6 +326,8 @@ class Game {
       ) {
         globals.powerUpHeld = globals.powerUp;
         globals.powerUp = null;
+        globals.sounds[Sound.POWERUP_EFFECT].currentTime = 0;
+        globals.sounds[Sound.POWERUP_EFFECT].play();
       }
     }
 
@@ -462,6 +464,8 @@ class Game {
 
   addPoints(amount) {
     let decreaseCurse = 0;
+    globals.sounds[Sound.COIN_EFFECT].currentTime = 0;
+    globals.sounds[Sound.COIN_EFFECT].play();
     if (amount === 3) {
       globals.score = globals.score + 100;
       decreaseCurse = 10;
@@ -531,6 +535,8 @@ class Game {
   }
 
   usePowerUp() {
+    globals.sounds[Sound.POWERUP_EFFECT].currentTime = 0;
+    globals.sounds[Sound.POWERUP_EFFECT].play();
     if (globals.powerUpHeld.type === SpriteID.POWERUP_BOMB) {
       for (let row = 0; row < globals.grid.rows; row++) {
         for (let col = 0; col < globals.grid.cols; col++) {

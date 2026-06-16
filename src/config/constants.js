@@ -65,4 +65,7 @@ export const Sound = {
   GAME_MUSIC: 1,
   STORY_MUSIC: 2,
 
+  COIN_EFFECT: 3,
+  POWERUP_EFFECT: 4,
+
 };

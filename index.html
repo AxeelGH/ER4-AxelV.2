@@ -7,19 +7,26 @@
     <link rel="icon" href="./assets/images/GameLogo.png" />
   </head>
   <body>
-      <div id="gameContainer">
-    <canvas id="gameScreen" width="512" height="384"></canvas>
-  </div>
+    <div id="gameContainer">
+      <canvas id="gameScreen" width="512" height="384"></canvas>
+    </div>
     <script type="module" src="./src/index.js"></script>
 
-        <audio id="startMusic">
+    <audio id="startMusic">
       <source src="./assets/sounds/ControlMusic.mp3" type="audio/mp3" />
     </audio>
-        <audio id="gameMusic">
+    <audio id="gameMusic">
       <source src="./assets/sounds/GameMusic.mp3" type="audio/mp3" />
     </audio>
-        <audio id="storyMusic">
+    <audio id="storyMusic">
       <source src="./assets/sounds/StoryMusic.mp3" type="audio/mp3" />
+    </audio>
+
+    <audio id="coinEffect">
+      <source src="./assets/sounds/CoinEffect.mp3" type="audio/mp3" />
+    </audio>
+    <audio id="powerUpEffect">
+      <source src="./assets/sounds/PowerUp.mp3" type="audio/mp3" />
     </audio>
   </body>
 </html>

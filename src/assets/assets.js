@@ -40,6 +40,20 @@ export default class Asset {
     storyMusic.load();
     globals.sounds.push(storyMusic);
     globals.assetsToLoad.push(storyMusic);
+
+    let coinEffect = document.querySelector("#coinEffect");
+    coinEffect.addEventListener("canplaythrough", this.tileSetLoader, false);
+    coinEffect.addEventListener("timeupdate", updateMusic, false);
+    coinEffect.load();
+    globals.sounds.push(coinEffect);
+    globals.assetsToLoad.push(coinEffect);
+
+    let powerUpEffect = document.querySelector("#powerUpEffect");
+    powerUpEffect.addEventListener("canplaythrough", this.tileSetLoader, false);
+    powerUpEffect.addEventListener("timeupdate", updateMusic, false);
+    powerUpEffect.load();
+    globals.sounds.push(powerUpEffect);
+    globals.assetsToLoad.push(powerUpEffect);
   }
 
   tileSetLoader() {
