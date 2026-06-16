@@ -1,3 +1,4 @@
+import PowerUp from "../sprites/PowerUp.js";
 import { FPS, GameState } from "./constants.js";
 
 export default {
@@ -20,7 +21,6 @@ export default {
   goalScore: 1000,
   lives: 3,
   chrono: null,
-  currentPowerUP: "NONE",
   curse:0,
   levelTime: 120,
 
@@ -36,4 +36,9 @@ export default {
 
   matchTimer:0,
   matchExploding:false,
+
+  powerUp:null,
+  powerUpHeld: null,
+  powerUpSpawnTimer: 0,
+
 };

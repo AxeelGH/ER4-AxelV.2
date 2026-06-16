@@ -191,6 +191,21 @@ export class View {
           );
         }
       }
+      if (globals.powerUp) {
+        const powerUp = globals.powerUp;
+        const pos = this.gridView.cellToPixel(powerUp.col, powerUp.fil);
+        this.ctx.drawImage(
+          img,
+          0,
+          powerUp.row * 32,
+          32,
+          32,
+          pos.x,
+          pos.y,
+          COIN_SIZE,
+          COIN_SIZE,
+        );
+      }
     }
   }
 
@@ -234,8 +249,23 @@ export class View {
 
     ctx.fillStyle = "lightblue";
     ctx.fillText("POWER-UP", 360, 240);
-    ctx.fillStyle = "lightgray";
-    ctx.fillText(globals.currentPowerUP, 360, 260);
+    if (globals.powerUpHeld) {
+      const img = globals.tileSets[0];
+      this.ctx.drawImage(
+        img,
+        0,
+        globals.powerUpHeld.row * 32,
+        32,
+        32,
+        360,
+        250,
+        30,
+        30,
+      );
+    } else {
+      ctx.fillStyle = "lightgray";
+      ctx.fillText("NONE", 360, 260);
+    }
   }
 
   renderLives(x, y, lives) {

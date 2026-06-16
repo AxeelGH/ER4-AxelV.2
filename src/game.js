@@ -10,6 +10,7 @@ import Sprite from "./sprites/Sprite.js";
 import Coin from "./sprites/Coin.js";
 import Goblin from "./sprites/Goblin.js";
 import Bat from "./sprites/Bat.js";
+import PowerUp from "./sprites/PowerUp.js";
 
 class Game {
   constructor(canvas) {
@@ -18,8 +19,8 @@ class Game {
 
     globals.ctx = this.ctx;
 
-    this.gameState = GameState.BETWEEN_LEVELS;
-    globals.gameState = GameState.BETWEEN_LEVELS;
+    this.gameState = GameState.LOADING;
+    globals.gameState = GameState.LOADING;
     console.log("Game State: LOADING");
 
     this.inputManager = new Events();
@@ -174,7 +175,10 @@ class Game {
           globals.levelTime = 120;
           globals.currentLevel = 1;
           globals.goalScore = 1000;
-          globals.score = 900;
+          globals.score = 0;
+          globals.powerUp = null;
+          globals.powerUpHeld = null;
+          globals.powerUpSpawnTimer = 0;
           globals.grid.init();
           break;
         case 2:
@@ -233,6 +237,35 @@ class Game {
       globals.enemies[i].update(dt);
     }
 
+    if (!globals.powerUp && !globals.powerUpHeld) {
+      globals.powerUpSpawnTimer += dt;
+      if (globals.powerUpSpawnTimer >= 8) {
+        globals.powerUpSpawnTimer = 0;
+        if (Math.random() < 0.5) {
+          this.spawnPowerUp();
+        }
+      }
+    }
+
+    if (globals.powerUp) {
+      globals.powerUp.update();
+    }
+
+    if (globals.powerUp && globals.currentCoin) {
+      if (
+        globals.currentCoin.col === globals.powerUp.col &&
+        globals.currentCoin.fil === globals.powerUp.fil
+      ) {
+        globals.powerUpHeld = globals.powerUp;
+        globals.powerUp = null;
+      }
+    }
+
+    if (globals.action.space && globals.powerUpHeld) {
+      globals.action.space = false;
+      this.usePowerUp();
+    }
+
     for (let i = 0; i < globals.enemies.length; i++) {
       const enemy = globals.enemies[i];
       if (enemy.id === SpriteID.BAT) {
@@ -266,7 +299,6 @@ class Game {
         globals.lives--;
         this.reduceGoblinRockCount();
         globals.grid.setCell(nextFil, coin.col, 0);
-
       } else if (globals.grid.data[nextFil][coin.col] !== 0) {
         globals.grid.setCell(coin.fil, coin.col, coin.type + 1);
         this.checkMatches(coin.fil, coin.col);
@@ -367,7 +399,7 @@ class Game {
       globals.score = globals.score + 300;
     }
 
-    if(globals.score > globals.highScore) {
+    if (globals.score > globals.highScore) {
       globals.highScore = globals.score;
     }
 
@@ -400,10 +432,53 @@ class Game {
     }
   }
 
+  spawnPowerUp() {
+    const newPowerUp = new PowerUp();
+
+    let tries = 0;
+    while (tries < 20) {
+      const col = Math.floor(Math.random() * globals.grid.cols);
+      const fil = Math.floor(Math.random() * (globals.grid.rows - 5)) + 3;
+
+      if (globals.grid.data[fil][col] === 0) {
+        newPowerUp.col = col;
+        newPowerUp.fil = fil;
+        globals.powerUp = newPowerUp;
+        return;
+      }
+      tries++;
+    }
+  }
+
+  usePowerUp() {
+    if (globals.powerUpHeld.type === SpriteID.POWERUP_BOMB) {
+      for (let row = 0; row < globals.grid.rows; row++) {
+        for (let col = 0; col < globals.grid.cols; col++) {
+          if (globals.grid.data[row][col] === 4) {
+            globals.grid.setCell(row, col, 0);
+          }
+        }
+      }
+    } else if (globals.powerUpHeld.type === SpriteID.POWERUP_GOLD) {
+      for (let row = 0; row < globals.grid.rows; row++) {
+        for (let col = 0; col < globals.grid.cols; col++) {
+          const value = globals.grid.data[row][col];
+          if (value === 1 || value === 2 || value === 3) {
+            globals.grid.setCell(row, col, 3);
+          }
+        }
+      }
+    }
+
+    globals.powerUpHeld = null;
+  }
+
   startLevel2() {
     globals.currentLevel = 2;
     globals.goalScore = 1500;
     globals.levelTime = 120;
+    globals.powerUp = null;
+    globals.powerUpSpawnTimer = 0;
 
     globals.grid.init();
 
@@ -414,7 +489,6 @@ class Game {
     const bat1 = new Bat();
     const bat2 = new Bat();
     bat1.moveInterval = 0.2;
-    bat2.moveInterval = 0.2;
     globals.enemies.push(goblin);
     globals.enemies.push(bat1);
     globals.enemies.push(bat2);
