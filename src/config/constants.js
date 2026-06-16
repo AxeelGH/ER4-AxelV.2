@@ -7,6 +7,7 @@ export const GameState = {
   GAME_OVER: 4,
   HIGHSCORE: 5,
   CONTROLS: 6,
+  WIN: 7,
 };
 
 export const FPS = 60;
