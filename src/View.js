@@ -3,6 +3,7 @@ import { GameState, CELL_SIZE, COIN_SIZE } from "./config/constants.js";
 import GridView from "./map/GridView.js";
 import Chronometer from "./Chronometer.js";
 
+
 export class View {
   constructor(ctx, game) {
     this.ctx = ctx;
@@ -86,52 +87,36 @@ export class View {
       this.ctx.canvas.height,
     );
     this.gridView.render();
-    this.renderCoins();
+    this.renderGridContent();
+    globals.goblin.draw(this.ctx);
     this.renderHud();
   }
 
-  renderCoins() {
+  renderGridContent() {
     const img = globals.tileSets[0];
 
     if (globals.currentCoin) {
-      const coin = globals.currentCoin;
-      const pos = this.gridView.cellToPixel(coin.col, coin.fil);
-      const srcX = coin.frames.frameCounter * 32;
-      const srcY = (coin.type) * 32;
-
-      this.ctx.drawImage(
-        img,
-        srcX,
-        srcY,
-        32,
-        32,
-        pos.x,
-        pos.y,
-        COIN_SIZE,
-        COIN_SIZE,
-      );
+        const coin = globals.currentCoin;
+        const pos = this.gridView.cellToPixel(coin.col, coin.fil);
+        const srcX = coin.frames.frameCounter * 32;
+        const srcY = coin.type * 32;
+        this.ctx.drawImage(img, srcX, srcY, 32, 32, pos.x, pos.y, COIN_SIZE, COIN_SIZE);
     }
 
     for (let fil = 0; fil < globals.grid.rows; fil++) {
-      for (let col = 0; col < globals.grid.cols; col++) {
-        if (globals.grid.data[fil][col] !== 0) {
-          const type = globals.grid.data[fil][col] - 1;
-          const pos = this.gridView.cellToPixel(col, fil);
-          const srcY = (type) * 32;
+        for (let col = 0; col < globals.grid.cols; col++) {
+            const value = globals.grid.data[fil][col];
+            if (value === 0) continue;
 
-          this.ctx.drawImage(
-            img,
-            0,
-            srcY,
-            32,
-            32,
-            pos.x,
-            pos.y,
-            COIN_SIZE,
-            COIN_SIZE,
-          );
+            const pos = this.gridView.cellToPixel(col, fil);
+
+            if (value === 4) {
+                this.ctx.drawImage(img, 0, 160, 32, 32, pos.x, pos.y, COIN_SIZE, COIN_SIZE);
+            } else {
+                const type = value - 1;
+                this.ctx.drawImage(img, 0, type * 32, 32, 32, pos.x, pos.y, COIN_SIZE, COIN_SIZE);
+            }
         }
-      }
     }
   }
 

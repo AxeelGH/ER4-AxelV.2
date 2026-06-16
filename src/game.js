@@ -6,7 +6,9 @@ import Grid from "./map/Grid.js";
 import GridView from "./map/GridView.js";
 import Asset from "./assets/assets.js";
 import Chronometer from "./Chronometer.js";
+import Sprite from "./sprites/Sprite.js";
 import Coin from "./sprites/Coin.js";
+import Goblin from "./sprites/Goblin.js";
 
 class Game {
   constructor(canvas) {
@@ -27,6 +29,7 @@ class Game {
     globals.chrono = new Chronometer();
 
     globals.currentCoin = new Coin();
+    globals.goblin = new Goblin();
 
     globals.action = {
       moveUp: false,
@@ -175,6 +178,7 @@ class Game {
     if (!globals.currentCoin) return;
 
     globals.currentCoin.update();
+    globals.goblin.update(dt);
 
     globals.dropTimer += dt;
     if (globals.dropTimer >= globals.dropInterval) {

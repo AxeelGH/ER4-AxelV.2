@@ -30,4 +30,6 @@ export default {
   currentCoin: null,
   dropTimer: 0,
   dropInterval: 1.0,
+
+  goblin: null,
 };
