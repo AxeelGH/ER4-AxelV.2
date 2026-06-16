@@ -17,8 +17,8 @@ class Game {
 
     globals.ctx = this.ctx;
 
-    this.gameState = GameState.LOADING;
-    globals.gameState = GameState.LOADING;
+    this.gameState = GameState.GAME_OVER;
+    globals.gameState = GameState.GAME_OVER;
     console.log("Game State: LOADING");
 
     this.inputManager = new Events();
@@ -126,6 +126,10 @@ class Game {
         this.updateSecondary(dt);
         break;
 
+      case GameState.GAME_OVER:
+        this.updateGameOver(dt);
+        break;
+
       default:
         break;
     }
@@ -210,6 +214,15 @@ class Game {
   }
 
   updateSecondary(dt) {
+    if (globals.action.space) {
+      globals.action.space = false;
+      this.gameState = GameState.MENU;
+      globals.gameState = GameState.MENU;
+    }
+  }
+
+  updateGameOver(dt) {
+    globals.lives =3;
     if (globals.action.space) {
       globals.action.space = false;
       this.gameState = GameState.MENU;

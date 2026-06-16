@@ -3,7 +3,6 @@ import { GameState, CELL_SIZE, COIN_SIZE } from "./config/constants.js";
 import GridView from "./map/GridView.js";
 import Chronometer from "./Chronometer.js";
 
-
 export class View {
   constructor(ctx, game) {
     this.ctx = ctx;
@@ -21,6 +20,9 @@ export class View {
 
     this.playBackground = new Image();
     this.playBackground.src = "./assets/images/GameBackground.png";
+
+    this.gameOverBackground = new Image();
+    this.gameOverBackground.src = "./assets/images/GameOverBackground.png";
   }
   render() {
     switch (globals.gameState) {
@@ -41,6 +43,10 @@ export class View {
         break;
       case GameState.HIGHSCORE:
         this.renderHighscore();
+        break;
+
+      case GameState.GAME_OVER:
+        this.renderGameOver();
         break;
     }
   }
@@ -96,27 +102,57 @@ export class View {
     const img = globals.tileSets[0];
 
     if (globals.currentCoin) {
-        const coin = globals.currentCoin;
-        const pos = this.gridView.cellToPixel(coin.col, coin.fil);
-        const srcX = coin.frames.frameCounter * 32;
-        const srcY = coin.type * 32;
-        this.ctx.drawImage(img, srcX, srcY, 32, 32, pos.x, pos.y, COIN_SIZE, COIN_SIZE);
+      const coin = globals.currentCoin;
+      const pos = this.gridView.cellToPixel(coin.col, coin.fil);
+      const srcX = coin.frames.frameCounter * 32;
+      const srcY = coin.type * 32;
+      this.ctx.drawImage(
+        img,
+        srcX,
+        srcY,
+        32,
+        32,
+        pos.x,
+        pos.y,
+        COIN_SIZE,
+        COIN_SIZE,
+      );
     }
 
     for (let fil = 0; fil < globals.grid.rows; fil++) {
-        for (let col = 0; col < globals.grid.cols; col++) {
-            const value = globals.grid.data[fil][col];
-            if (value === 0) continue;
+      for (let col = 0; col < globals.grid.cols; col++) {
+        const value = globals.grid.data[fil][col];
+        if (value === 0) continue;
 
-            const pos = this.gridView.cellToPixel(col, fil);
+        const pos = this.gridView.cellToPixel(col, fil);
 
-            if (value === 4) {
-                this.ctx.drawImage(img, 0, 160, 32, 32, pos.x, pos.y, COIN_SIZE, COIN_SIZE);
-            } else {
-                const type = value - 1;
-                this.ctx.drawImage(img, 0, type * 32, 32, 32, pos.x, pos.y, COIN_SIZE, COIN_SIZE);
-            }
+        if (value === 4) {
+          this.ctx.drawImage(
+            img,
+            0,
+            160,
+            32,
+            32,
+            pos.x,
+            pos.y,
+            COIN_SIZE,
+            COIN_SIZE,
+          );
+        } else {
+          const type = value - 1;
+          this.ctx.drawImage(
+            img,
+            0,
+            type * 32,
+            32,
+            32,
+            pos.x,
+            pos.y,
+            COIN_SIZE,
+            COIN_SIZE,
+          );
         }
+      }
     }
   }
 
@@ -273,6 +309,45 @@ export class View {
       "HIGHSCORES -Press SPACE to return",
       this.ctx.canvas.width / 2,
       200,
+    );
+  }
+
+  renderGameOver() {
+    globals.ctx.drawImage(
+      this.gameOverBackground,
+      0,
+      0,
+      this.ctx.canvas.width,
+      this.ctx.canvas.height,
+    );
+
+    this.ctx.fillStyle = "#FF0000";
+    this.ctx.font = "48px dungeon";
+    this.ctx.textAlign = "center";
+    this.ctx.fillText("GAME OVER", this.ctx.canvas.width / 2, 40);
+
+    this.ctx.fillStyle = "#FFFFFF";
+    this.ctx.font = "24px dungeon";
+    this.ctx.fillText(
+      "FINAL SCORE: " + globals.score,
+      this.ctx.canvas.width / 2,
+      70,
+    );
+
+    this.ctx.fillStyle = "#FFD700";
+    this.ctx.font = "20px dungeon";
+    this.ctx.fillText(
+      "HIGH SCORE: " + globals.highScore,
+      this.ctx.canvas.width / 2,
+      100,
+    );
+
+    this.ctx.fillStyle = "#FFFFFF";
+    this.ctx.font = "16px dungeon";
+    this.ctx.fillText(
+      "Press SPACE to return to menu",
+      this.ctx.canvas.width / 2,
+      this.ctx.canvas.height - 50,
     );
   }
 }
