@@ -46,9 +46,9 @@ export default class Coin {
       }
     }
     if (globals.action.moveDown) {
-      globals.dropBaseInterval = 0.1;
+      globals.dropInterval = 0.1;
     } else {
-      globals.dropBaseInterval = globals.dropInterval;
+      globals.dropInterval = globals.dropBaseInterval;
     }
   }
-}
+} 
