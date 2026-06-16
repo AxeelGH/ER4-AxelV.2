@@ -185,6 +185,20 @@ class Game {
     if (globals.levelTime > 0) {
       globals.levelTime -= dt;
     }
+    if (globals.matchExploding) {
+    globals.matchTimer += dt;
+    if (globals.matchTimer >= 0.4) {
+        for (let row = 0; row < globals.grid.rows; row++) {
+            for (let col = 0; col < globals.grid.cols; col++) {
+                if (globals.grid.data[row][col] === 5) {
+                    globals.grid.setCell(row, col, 0);
+                }
+            }
+        }
+        globals.matchExploding = false;
+    }
+    return;
+}
     if (globals.levelTime <= 0) {
       this.gameState = GameState.GAME_OVER;
       globals.gameState = GameState.GAME_OVER;
@@ -264,7 +278,7 @@ class Game {
 
   checkMatches(row, col) {
     const type = globals.grid.data[row][col];
-    if (type === 0 || type === 4) return;
+    if (type === 0 || type === 4 || type === 5) return;
 
     let count = 1;
 
@@ -293,8 +307,10 @@ class Game {
         end++;
       }
       for (let x = start; x <= end; x++) {
-        globals.grid.setCell(row, x, 0);
+        globals.grid.setCell(row, x, 5);
       }
+      globals.matchExploding = true;
+      globals.matchTimer = 0;
       this.addPoints(count);
     }
 
@@ -324,8 +340,10 @@ class Game {
         end++;
       }
       for (let y = start; y <= end; y++) {
-        globals.grid.setCell(y, col, 0);
+        globals.grid.setCell(y, col, 5);
       }
+      globals.matchExploding = true;
+      globals.matchTimer = 0;
       this.addPoints(count);
     }
   }
