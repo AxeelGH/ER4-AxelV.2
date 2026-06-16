@@ -1,5 +1,11 @@
 import globals from "./config/globals.js";
-import { GameState, SpriteID, State, ALPHABET, Sound } from "./config/constants.js";
+import {
+  GameState,
+  SpriteID,
+  State,
+  ALPHABET,
+  Sound,
+} from "./config/constants.js";
 import { Events } from "./events/Events.js";
 import { View } from "./View.js";
 import Grid from "./map/Grid.js";
@@ -128,7 +134,7 @@ class Game {
         break;
 
       case GameState.STORY:
-        this.updateSecondary(dt);
+        this.updateStory(dt);
         break;
 
       case GameState.CONTROLS:
@@ -165,10 +171,6 @@ class Game {
   }
 
   updateMenu(dt) {
-
-    globals.sounds[Sound.SECONDARY_MUSIC].play();
-    globals.sounds[Sound.SECONDARY_MUSIC].volume = 0.5;
-
     if (globals.action.moveUp) {
       globals.action.moveUp = false;
       globals.menuIndex = globals.menuIndex > 0 ? globals.menuIndex - 1 : 3;
@@ -184,12 +186,16 @@ class Game {
 
       switch (globals.menuIndex) {
         case 0:
+          this.stopMusic();
+          globals.sounds[Sound.STORY_MUSIC].play();
+          globals.sounds[Sound.STORY_MUSIC].volume = 0.5;
           this.gameState = GameState.STORY;
           globals.gameState = GameState.STORY;
           break;
         case 1:
+          this.stopMusic();
           globals.sounds[Sound.GAME_MUSIC].play();
-          globals.sounds[Sound.GAME_MUSIC].volume = 0.5;
+          globals.sounds[Sound.GAME_MUSIC].volume = 0.3;
           this.gameState = GameState.PLAYING;
           globals.gameState = GameState.PLAYING;
           globals.levelTime = 120;
@@ -214,7 +220,6 @@ class Game {
           globals.loadingHighScores = false;
           this.gameState = GameState.LOAD_HIGH_SCORES;
           globals.gameState = GameState.LOAD_HIGH_SCORES;
-          break;
           break;
       }
     }
@@ -570,10 +575,24 @@ class Game {
     }
   }
 
+  updateStory(dt) {
+        if (globals.action.space) {
+      globals.action.space = false;
+      this.stopMusic();
+                globals.sounds[Sound.SECONDARY_MUSIC].play();
+          globals.sounds[Sound.SECONDARY_MUSIC].volume = 0.5;
+      this.gameState = GameState.MENU;
+      globals.gameState = GameState.MENU;
+    }
+  }
+
   updateGameOver(dt) {
     globals.lives = 3;
     if (globals.action.space) {
       globals.action.space = false;
+      this.stopMusic();
+      globals.sounds[Sound.SECONDARY_MUSIC].play();
+      globals.sounds[Sound.SECONDARY_MUSIC].volume = 0.5;
       globals.nameLetterIndexes = [0, 0, 0];
       globals.nameInputIndex = 0;
       globals.enterNameReady = false;
@@ -585,6 +604,9 @@ class Game {
   updateWin(dt) {
     if (globals.action.space) {
       globals.action.space = false;
+      this.stopMusic();
+      globals.sounds[Sound.SECONDARY_MUSIC].play();
+      globals.sounds[Sound.SECONDARY_MUSIC].volume = 0.5;
       globals.nameLetterIndexes = [0, 0, 0];
       globals.nameInputIndex = 0;
       globals.enterNameReady = false;
@@ -738,11 +760,32 @@ class Game {
     globals.gameState = GameState.LOAD_HIGH_SCORES;
   }
 
-  updateIntro(){
-        if (globals.action.space) {
+  updateIntro() {
+    if (globals.action.space) {
       globals.action.space = false;
+      this.stopMusic();
+
+      globals.sounds[Sound.SECONDARY_MUSIC].play();
+      globals.sounds[Sound.SECONDARY_MUSIC].volume = 0.5;
+
       this.gameState = GameState.MENU;
       globals.gameState = GameState.MENU;
+    }
+  }
+
+  stopMusic() {
+    if (globals.sounds[Sound.GAME_MUSIC]) {
+      globals.sounds[Sound.GAME_MUSIC].pause();
+      globals.sounds[Sound.GAME_MUSIC].currentTime = 0;
+    }
+    if (globals.sounds[Sound.SECONDARY_MUSIC]) {
+      globals.sounds[Sound.SECONDARY_MUSIC].pause();
+      globals.sounds[Sound.SECONDARY_MUSIC].currentTime = 0;
+    }
+
+    if (globals.sounds[Sound.STORY_MUSIC]) {
+      globals.sounds[Sound.STORY_MUSIC].pause();
+      globals.sounds[Sound.STORY_MUSIC].currentTime = 0;
     }
   }
 
