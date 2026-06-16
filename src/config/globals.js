@@ -60,4 +60,6 @@ export default {
 
   sounds: [],
   currentSound: -1,
+
+  rockRotationAngle: 0,
 };

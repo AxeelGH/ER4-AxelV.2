@@ -167,17 +167,25 @@ export class View {
         const pos = this.gridView.cellToPixel(col, fil);
 
         if (value === 4) {
+          const centerX = pos.x + COIN_SIZE / 2;
+          const centerY = pos.y + COIN_SIZE / 2;
+
+          this.ctx.save();
+          this.ctx.translate(centerX, centerY);
+          this.ctx.rotate(globals.rockRotationAngle);
+
           this.ctx.drawImage(
             img,
             0,
             160,
             32,
             32,
-            pos.x,
-            pos.y,
+            -COIN_SIZE / 2,
+            -COIN_SIZE / 2,
             COIN_SIZE,
             COIN_SIZE,
           );
+          this.ctx.restore();
         } else if (value === 5) {
           const frame = Math.floor((globals.matchTimer / 0.4) * 8);
           const srcX = frame * 32;
@@ -627,12 +635,8 @@ export class View {
     this.ctx.font = "40px dungeon";
     this.ctx.fillText("ARE YOU READY?", 10, 280);
 
-        this.ctx.fillStyle = "#888888";
+    this.ctx.fillStyle = "#888888";
     this.ctx.font = "16px dungeon";
-    this.ctx.fillText(
-      "Press SPACE to continue",
-      80,
-      380,
-    );
+    this.ctx.fillText("Press SPACE to continue", 80, 380);
   }
 }

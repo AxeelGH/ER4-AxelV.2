@@ -250,6 +250,8 @@ class Game {
       return;
     }
 
+    globals.rockRotationAngle += dt;
+
     globals.curseValue += globals.curseRate * dt;
     if (globals.curseValue >= globals.maxCurse) {
       this.gameState = GameState.GAME_OVER;
@@ -576,11 +578,11 @@ class Game {
   }
 
   updateStory(dt) {
-        if (globals.action.space) {
+    if (globals.action.space) {
       globals.action.space = false;
       this.stopMusic();
-                globals.sounds[Sound.SECONDARY_MUSIC].play();
-          globals.sounds[Sound.SECONDARY_MUSIC].volume = 0.5;
+      globals.sounds[Sound.SECONDARY_MUSIC].play();
+      globals.sounds[Sound.SECONDARY_MUSIC].volume = 0.5;
       this.gameState = GameState.MENU;
       globals.gameState = GameState.MENU;
     }
