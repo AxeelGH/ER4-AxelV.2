@@ -28,3 +28,19 @@ export const GRID_ROWS = 19;
 export const GRID_ORIGIN_X = 180;
 export const GRID_ORIGIN_Y = 32;
 export const COIN_SIZE = 20;
+
+export const SpriteID = {
+    COIN: 0,
+    ROCK: 1,
+    GOBLIN: 2,
+    BAT: 3,
+};
+
+export const State = {
+    
+    COIN: 0,
+    EXPLOSION: 1,
+
+    BAT_LEFT: 0,
+    BAT_RIGHT: 1,
+}

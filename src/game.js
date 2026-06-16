@@ -1,5 +1,5 @@
 import globals from "./config/globals.js";
-import { GameState } from "./config/constants.js";
+import { GameState, SpriteID } from "./config/constants.js";
 import { Events } from "./events/Events.js";
 import { View } from "./View.js";
 import Grid from "./map/Grid.js";
@@ -9,6 +9,7 @@ import Chronometer from "./Chronometer.js";
 import Sprite from "./sprites/Sprite.js";
 import Coin from "./sprites/Coin.js";
 import Goblin from "./sprites/Goblin.js";
+import Bat from "./sprites/Bat.js";
 
 class Game {
   constructor(canvas) {
@@ -29,7 +30,12 @@ class Game {
     globals.chrono = new Chronometer();
 
     globals.currentCoin = new Coin();
-    globals.goblin = new Goblin();
+    globals.enemies = [];
+    const goblin = new Goblin();
+    const bat = new Bat();
+    globals.enemies.push(goblin);
+    globals.enemies.push(bat);
+    globals.goblinRef = goblin;
 
     globals.action = {
       moveUp: false,
@@ -129,7 +135,7 @@ class Game {
       case GameState.GAME_OVER:
         this.updateGameOver(dt);
         break;
-      
+
       case GameState.WIN:
         this.updateWin(dt);
         break;
@@ -186,7 +192,22 @@ class Game {
     if (!globals.currentCoin) return;
 
     globals.currentCoin.update();
-    globals.goblin.update(dt);
+    for (let i = 0; i < globals.enemies.length; i++) {
+      globals.enemies[i].update(dt);
+    }
+
+    for (let i = 0; i < globals.enemies.length; i++) {
+      const enemy = globals.enemies[i];
+      if (enemy.id === SpriteID.BAT) {
+        if (
+          globals.currentCoin.col === enemy.col &&
+          globals.currentCoin.fil === enemy.fil
+        ) {
+          globals.currentCoin = new Coin();
+          return;
+        }
+      }
+    }
 
     globals.dropTimer += dt;
     if (globals.dropTimer >= globals.dropInterval) {
@@ -200,7 +221,7 @@ class Game {
         globals.currentCoin = new Coin();
       } else if (globals.grid.data[nextFil][coin.col] === 4) {
         globals.lives = globals.lives - 1;
-        globals.goblin.rockCount = globals.goblin.rockCount - 1;
+        this.reduceGoblinRockCount();
         globals.grid.setCell(nextFil, coin.col, 0);
         globals.currentCoin = new Coin();
 
@@ -213,6 +234,14 @@ class Game {
         globals.currentCoin = new Coin();
       } else {
         coin.fil = nextFil;
+      }
+    }
+  }
+
+  reduceGoblinRockCount() {
+    for (let i = 0; i < globals.enemies.length; i++) {
+      if (globals.enemies[i].id === SpriteID.GOBLIN) {
+        globals.enemies[i].rockCount = globals.enemies[i].rockCount - 1;
       }
     }
   }

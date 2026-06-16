@@ -26,7 +26,6 @@ export class View {
 
     this.winBackground = new Image();
     this.winBackground.src = "./assets/images/WinBackground.png";
-
   }
   render() {
     switch (globals.gameState) {
@@ -52,7 +51,7 @@ export class View {
       case GameState.GAME_OVER:
         this.renderGameOver();
         break;
-      
+
       case GameState.WIN:
         this.renderWin();
         break;
@@ -102,7 +101,9 @@ export class View {
     );
     this.gridView.render();
     this.renderGridContent();
-    globals.goblin.draw(this.ctx);
+    for (let i = 0; i < globals.enemies.length; i++) {
+      globals.enemies[i].draw(this.ctx);
+    }
     this.renderHud();
   }
 
@@ -370,23 +371,15 @@ export class View {
     this.ctx.fillStyle = "#eca409ff";
     this.ctx.font = "48px dungeon";
     this.ctx.textAlign = "center";
-    this.ctx.fillText("YOU WIN!!", this.ctx.canvas.width/2, 45);
+    this.ctx.fillText("YOU WIN!!", this.ctx.canvas.width / 2, 45);
 
     this.ctx.fillStyle = "#FFFFFF";
     this.ctx.font = "20px dungeon";
-    this.ctx.fillText(
-      "FINAL SCORE: " + globals.score,
-      370,
-      300,
-    );
+    this.ctx.fillText("FINAL SCORE: " + globals.score, 370, 300);
 
     this.ctx.fillStyle = "#FFD700";
     this.ctx.font = "20px dungeon";
-    this.ctx.fillText(
-      "HIGH SCORE: " + globals.highScore,
-      360,
-      330,
-    );
+    this.ctx.fillText("HIGH SCORE: " + globals.highScore, 360, 330);
 
     this.ctx.fillStyle = "#FFFFFF";
     this.ctx.font = "16px dungeon";

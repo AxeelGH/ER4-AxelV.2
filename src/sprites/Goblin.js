@@ -2,11 +2,12 @@ import Sprite from "./Sprite.js";
 import ImageSet from "./ImageSet.js";
 import Frames from "./Frames.js";
 import globals from "../config/globals.js";
-import { GRID_COLS, GRID_ROWS, GRID_ORIGIN_X, GRID_ORIGIN_Y, CELL_SIZE } from "../config/constants.js";
+import { GRID_COLS, GRID_ROWS, GRID_ORIGIN_X, GRID_ORIGIN_Y, CELL_SIZE, SpriteID } from "../config/constants.js";
 
 export default class Goblin extends Sprite {
   constructor() {
     super();
+    this.id = SpriteID.GOBLIN;
     this.col = 0;
     this.direction = 1;
     this.moveTimer = 0;

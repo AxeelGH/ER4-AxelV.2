@@ -31,5 +31,5 @@ export default {
   dropTimer: 0,
   dropInterval: 1.0,
 
-  goblin: null,
+  enemies: [],
 };
