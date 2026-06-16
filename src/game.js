@@ -230,8 +230,13 @@ class Game {
       globals.levelTime -= dt;
     }
     if (globals.lives <= 0) {
-      this.gameState = GameState.GAME_OVER;
-      globals.gameState = GameState.GAME_OVER;
+      if (globals.currentLevel === 3) {
+        this.gameState = GameState.WIN;
+        globals.gameState = GameState.WIN;
+      } else {
+        this.gameState = GameState.GAME_OVER;
+        globals.gameState = GameState.GAME_OVER;
+      }
       return;
     }
     if (globals.matchExploding) {
@@ -254,8 +259,13 @@ class Game {
 
     globals.curseValue += globals.curseRate * dt;
     if (globals.curseValue >= globals.maxCurse) {
-      this.gameState = GameState.GAME_OVER;
-      globals.gameState = GameState.GAME_OVER;
+      if (globals.currentLevel === 3) {
+        this.gameState = GameState.WIN;
+        globals.gameState = GameState.WIN;
+      } else {
+        this.gameState = GameState.GAME_OVER;
+        globals.gameState = GameState.GAME_OVER;
+      }
       return;
     }
 
@@ -270,8 +280,13 @@ class Game {
     }
 
     if (globals.levelTime <= 0) {
-      this.gameState = GameState.GAME_OVER;
-      globals.gameState = GameState.GAME_OVER;
+      if (globals.currentLevel === 3) {
+        this.gameState = GameState.WIN;
+        globals.gameState = GameState.WIN;
+      } else {
+        this.gameState = GameState.GAME_OVER;
+        globals.gameState = GameState.GAME_OVER;
+      }
     }
 
     if (!globals.currentCoin) return;
@@ -468,6 +483,10 @@ class Game {
       this.gameState = GameState.BETWEEN_LEVELS;
       globals.gameState = GameState.BETWEEN_LEVELS;
     }
+    if (globals.currentLevel === 2 && globals.score >= globals.goalScore) {
+      this.gameState = GameState.BETWEEN_LEVELS;
+      globals.gameState = GameState.BETWEEN_LEVELS;
+    }
   }
 
   applyGravity() {
@@ -561,14 +580,48 @@ class Game {
     globals.dropTimer = 0;
   }
 
+  startLevel3() {
+    globals.currentLevel = 3;
+    globals.goalScore = 9999999;
+    globals.levelTime = 120;
+    globals.powerUp = null;
+    globals.powerUpSpawnTimer = 0;
+    globals.curseValue = 0;
+
+    globals.grid.init();
+
+    globals.enemies = [];
+    const goblin = new Goblin();
+    goblin.maxRocks = 5;
+    goblin.moveInterval = 0.3;
+    const bat1 = new Bat();
+    const bat2 = new Bat();
+    const bat3 = new Bat();
+    bat1.moveInterval = 0.2;
+    bat3.moveInterval = 0.3;
+    globals.enemies.push(goblin);
+    globals.enemies.push(bat1);
+    globals.enemies.push(bat2);
+    globals.enemies.push(bat3);
+    globals.goblinRef = goblin;
+
+    globals.currentCoin = new Coin();
+    globals.dropTimer = 0;
+  }
+
   updateBetweenLevels(dt) {
     if (globals.action.space) {
       globals.action.space = false;
-      this.startLevel2();
+      if (globals.currentLevel === 1) {
+        this.startLevel2();
+      } else if (globals.currentLevel === 2) {
+        this.startLevel3();
+      }
       this.gameState = GameState.PLAYING;
       globals.gameState = GameState.PLAYING;
     }
   }
+
   updateSecondary(dt) {
     if (globals.action.space) {
       globals.action.space = false;
