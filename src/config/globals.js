@@ -21,7 +21,7 @@ export default {
   goalScore: 1000,
   lives: 3,
   chrono: null,
-  curse:0,
+  curse: 0,
   levelTime: 120,
 
   menuIndex: 0,
@@ -35,10 +35,10 @@ export default {
 
   enemies: [],
 
-  matchTimer:0,
-  matchExploding:false,
+  matchTimer: 0,
+  matchExploding: false,
 
-  powerUp:null,
+  powerUp: null,
   powerUpHeld: null,
   powerUpSpawnTimer: 0,
 
@@ -47,4 +47,14 @@ export default {
   curseRate: 1.5,
   curseActive: false,
 
+  highScores: [],
+  highScoreMode: "menu",
+  highScorePage: 0,
+  nameLetterIndexes: [0, 0, 0],
+  nameInputIndex: 0,
+  newScorePosition: -1,
+  loadingHighScores: false,
+  newScoreName: "",
+  highScoreReady: false,
+  highScoreDelay: 0,
 };

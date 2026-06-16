@@ -1,5 +1,5 @@
 import globals from "./config/globals.js";
-import { GameState, SpriteID, State } from "./config/constants.js";
+import { GameState, SpriteID, State, ALPHABET } from "./config/constants.js";
 import { Events } from "./events/Events.js";
 import { View } from "./View.js";
 import Grid from "./map/Grid.js";
@@ -11,6 +11,7 @@ import Coin from "./sprites/Coin.js";
 import Goblin from "./sprites/Goblin.js";
 import Bat from "./sprites/Bat.js";
 import PowerUp from "./sprites/PowerUp.js";
+import HighScore from "./HighScore.js";
 
 class Game {
   constructor(canvas) {
@@ -19,8 +20,8 @@ class Game {
 
     globals.ctx = this.ctx;
 
-    this.gameState = GameState.LOADING;
-    globals.gameState = GameState.LOADING;
+    this.gameState = GameState.MENU;
+    globals.gameState = GameState.MENU;
     console.log("Game State: LOADING");
 
     this.inputManager = new Events();
@@ -130,7 +131,15 @@ class Game {
         break;
 
       case GameState.HIGHSCORE:
-        this.updateSecondary(dt);
+        this.updateHighScore(dt);
+        break;
+
+      case GameState.LOAD_HIGH_SCORES:
+        this.updateLoadHighScores(dt);
+        break;
+
+      case GameState.ENTER_NAME:
+        this.updateEnterName(dt);
         break;
 
       case GameState.GAME_OVER:
@@ -189,8 +198,12 @@ class Game {
           globals.gameState = GameState.CONTROLS;
           break;
         case 3:
-          this.gameState = GameState.HIGHSCORE;
-          globals.gameState = GameState.HIGHSCORE;
+          globals.highScoreMode = "menu";
+          globals.highScorePage = 0;
+          globals.loadingHighScores = false;
+          this.gameState = GameState.LOAD_HIGH_SCORES;
+          globals.gameState = GameState.LOAD_HIGH_SCORES;
+          break;
           break;
       }
     }
@@ -228,12 +241,12 @@ class Game {
       return;
     }
 
-    if(globals.curseValue >= 50 && !globals.curseActive) {
+    if (globals.curseValue >= 50 && !globals.curseActive) {
       globals.dropBaseInterval = 0.35;
-      globals.curseActive = true; 
+      globals.curseActive = true;
     }
 
-    if(globals.curseValue < 50 && globals.curseActive) {
+    if (globals.curseValue < 50 && globals.curseActive) {
       globals.curseActive = false;
       globals.dropInterval = 0.7;
     }
@@ -415,7 +428,6 @@ class Game {
   }
 
   addPoints(amount) {
-
     let decreaseCurse = 0;
     if (amount === 3) {
       globals.score = globals.score + 100;
@@ -551,17 +563,168 @@ class Game {
     globals.lives = 3;
     if (globals.action.space) {
       globals.action.space = false;
-      this.gameState = GameState.MENU;
-      globals.gameState = GameState.MENU;
+      globals.nameLetterIndexes = [0, 0, 0];
+      globals.nameInputIndex = 0;
+      globals.enterNameReady = false;
+      this.gameState = GameState.ENTER_NAME;
+      globals.gameState = GameState.ENTER_NAME;
     }
   }
 
   updateWin(dt) {
     if (globals.action.space) {
       globals.action.space = false;
+      globals.nameLetterIndexes = [0, 0, 0];
+      globals.nameInputIndex = 0;
+      globals.enterNameReady = false;
+      this.gameState = GameState.ENTER_NAME;
+      globals.gameState = GameState.ENTER_NAME;
+    }
+  }
+
+  updateLoadHighScores(dt) {
+    console.log("LOAD HIGH SCORE");
+    if (!globals.loadingHighScores) {
+      globals.loadingHighScores = true;
+      this.fetchHighScores();
+    }
+  }
+
+  async fetchHighScores() {
+    try {
+      const response = await fetch("http://localhost:8000/api/highscores");
+      const data = await response.json();
+
+      globals.highScores = [];
+      for (let i = 0; i < data.length; i++) {
+        const highScore = new HighScore(i + 1, data[i].name, data[i].score);
+        globals.highScores.push(highScore);
+      }
+
+      if (globals.highScoreMode === "gameover") {
+        globals.newScorePosition = -1;
+        for (let i = 0; i < globals.highScores.length; i++) {
+          if (
+            globals.highScores[i].name === globals.newScoreName &&
+            globals.highScores[i].score === globals.score
+          ) {
+            globals.newScorePosition = i;
+            break;
+          }
+        }
+        globals.highScorePage = Math.floor(globals.newScorePosition / 10);
+      }
+    } catch (error) {
+      console.error("Failed to load High Scores:", error);
+    }
+
+    globals.action.space = false;
+    globals.highScoreDelay = 0.5;
+    globals.loadingHighScores = false;
+    this.gameState = GameState.HIGHSCORE;
+    globals.gameState = GameState.HIGHSCORE;
+  }
+
+  updateHighScore(dt) {
+    console.log(
+      "HIGHSCORE delay:",
+      globals.highScoreDelay,
+      "space:",
+      globals.action.space,
+    );
+
+    if (globals.highScoreDelay > 0) {
+      globals.highScoreDelay -= dt;
+      globals.action.space = false;
+      return;
+    }
+    if (globals.highScoreMode === "menu") {
+      const totalPages = Math.ceil(globals.highScores.length / 10);
+
+      if (globals.action.moveUp) {
+        globals.action.moveUp = false;
+        if (globals.highScorePage > 0) {
+          globals.highScorePage = globals.highScorePage - 1;
+        }
+      }
+
+      if (globals.action.moveDown) {
+        globals.action.moveDown = false;
+        if (globals.highScorePage < totalPages - 1) {
+          globals.highScorePage = globals.highScorePage + 1;
+        }
+      }
+    }
+
+    if (globals.action.space) {
+      globals.action.space = false;
+      globals.newScorePosition = -1;
       this.gameState = GameState.MENU;
       globals.gameState = GameState.MENU;
     }
+  }
+
+  updateEnterName(dt) {
+    if (globals.action.moveLeft) {
+      globals.action.moveLeft = false;
+      if (globals.nameInputIndex > 0) {
+        globals.nameInputIndex = globals.nameInputIndex - 1;
+      }
+    }
+
+    if (globals.action.moveRight) {
+      globals.action.moveRight = false;
+      if (globals.nameInputIndex < 2) {
+        globals.nameInputIndex = globals.nameInputIndex + 1;
+      }
+    }
+
+    if (globals.action.moveUp) {
+      globals.action.moveUp = false;
+      globals.nameLetterIndexes[globals.nameInputIndex] =
+        globals.nameLetterIndexes[globals.nameInputIndex] + 1;
+      if (
+        globals.nameLetterIndexes[globals.nameInputIndex] >= ALPHABET.length
+      ) {
+        globals.nameLetterIndexes[globals.nameInputIndex] = 0;
+      }
+    }
+
+    if (globals.action.moveDown) {
+      globals.action.moveDown = false;
+      globals.nameLetterIndexes[globals.nameInputIndex] =
+        globals.nameLetterIndexes[globals.nameInputIndex] - 1;
+      if (globals.nameLetterIndexes[globals.nameInputIndex] < 0) {
+        globals.nameLetterIndexes[globals.nameInputIndex] = ALPHABET.length - 1;
+      }
+    }
+
+    if (globals.action.space) {
+      globals.action.space = false;
+      const name =
+        ALPHABET[globals.nameLetterIndexes[0]] +
+        ALPHABET[globals.nameLetterIndexes[1]] +
+        ALPHABET[globals.nameLetterIndexes[2]];
+      this.insertHighScore(name, globals.score);
+    }
+  }
+
+  async insertHighScore(name, score) {
+    try {
+      await fetch("http://localhost:8000/api/highscores", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: name, score: score }),
+      });
+    } catch (error) {
+      console.error("Failed storing Highscore:", error);
+    }
+
+    globals.newScoreName = name;
+    globals.highScoreMode = "gameover";
+    globals.loadingHighScores = false;
+    this.gameState = GameState.LOAD_HIGH_SCORES;
+    globals.gameState = GameState.LOAD_HIGH_SCORES;
   }
 
   render() {

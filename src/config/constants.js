@@ -9,6 +9,8 @@ export const GameState = {
   CONTROLS: 6,
   WIN: 7,
   BETWEEN_LEVELS: 8,
+  LOAD_HIGH_SCORES: 9,
+  ENTER_NAME: 10,
 };
 
 export const FPS = 60;
@@ -50,3 +52,8 @@ export const State = {
     POWERUP_BOMB: 4,
     POWERUP_GOLD:5,
 }
+
+export const ALPHABET = [
+  'A','B','C','D','E','F','G','H','I','J','K','L','M',
+  'N','O','P','Q','R','S','T','U','V','W','X','Y','Z'
+];

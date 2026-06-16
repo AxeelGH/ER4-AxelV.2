@@ -5,6 +5,7 @@ import {
   COIN_SIZE,
   SpriteID,
   State,
+  ALPHABET,
 } from "./config/constants.js";
 import GridView from "./map/GridView.js";
 import Chronometer from "./Chronometer.js";
@@ -32,6 +33,9 @@ export class View {
 
     this.winBackground = new Image();
     this.winBackground.src = "./assets/images/WinBackground.png";
+
+    this.highScoreBackground = new Image();
+    this.highScoreBackground.src = "./assets/images/HighScoresBackground.png";
   }
   render() {
     switch (globals.gameState) {
@@ -52,6 +56,14 @@ export class View {
         break;
       case GameState.HIGHSCORE:
         this.renderHighscore();
+        break;
+
+      case GameState.LOAD_HIGH_SCORES:
+        this.renderLoadHighScores();
+        break;
+
+      case GameState.ENTER_NAME:
+        this.renderEnterName();
         break;
 
       case GameState.GAME_OVER:
@@ -271,29 +283,22 @@ export class View {
     ctx.font = "16px dungeon";
     ctx.fillText("CURSE BAR", 10, canvas.height - 250);
 
-    const currentCurse = Math.min(1,globals.curseValue/globals.maxCurse);
+    const currentCurse = Math.min(1, globals.curseValue / globals.maxCurse);
 
     this.ctx.fillStyle = "red";
-    const fillWidth = (85)*currentCurse;
-    this.ctx.fillRect(25,155,fillWidth,10); 
+    const fillWidth = 85 * currentCurse;
+    this.ctx.fillRect(25, 155, fillWidth, 10);
 
     const img = globals.tileSets[0];
     this.ctx.drawImage(img, 0, 14 * 32, 112, 32, 10, 140, 112, 32);
 
     const faceFrames = 7;
     const faceFrame = Math.min(
-    faceFrames - 1,
-    Math.floor((globals.curseValue / globals.maxCurse) * faceFrames)
-);
+      faceFrames - 1,
+      Math.floor((globals.curseValue / globals.maxCurse) * faceFrames),
+    );
 
-this.ctx.drawImage(
-    img,
-    faceFrame * 32,  
-    15 * 32,        
-    32, 32,         
-    40, 280,        
-    64, 64           
-); 
+    this.ctx.drawImage(img, faceFrame * 32, 15 * 32, 32, 32, 40, 280, 64, 64);
   }
 
   renderLives(x, y, lives) {
@@ -397,15 +402,121 @@ this.ctx.drawImage(
   }
 
   renderHighscore() {
+    this.ctx.drawImage(
+      this.highScoreBackground,
+      0,
+      0,
+      this.ctx.canvas.width,
+      this.ctx.canvas.height,
+    );
+
+    this.ctx.fillStyle = "#FFD700";
+    this.ctx.font = "28px dungeon";
+    this.ctx.textAlign = "center";
+    this.ctx.fillText("HIGH SCORES", this.ctx.canvas.width / 2, 28);
+
+    this.ctx.fillStyle = "#000000ff";
+    this.ctx.font = "12px dungeon";
+    this.ctx.textAlign = "left";
+    this.ctx.fillText("POS", 40, 50);
+    this.ctx.fillText("NAME", 85, 50);
+    this.ctx.fillText("SCORE", 150, 50);
+
+    this.ctx.fillStyle = "#555555";
+    this.ctx.fillRect(20, 55, this.ctx.canvas.width - 40, 1);
+
+    const startIndex = globals.highScorePage * 10;
+    const endIndex = Math.min(startIndex + 10, globals.highScores.length);
+
+    for (let i = startIndex; i < endIndex; i++) {
+      const hs = globals.highScores[i];
+      const y = 72 + (i - startIndex) * 27;
+      const isHighlighted =
+        globals.highScoreMode === "gameover" && i === globals.newScorePosition;
+      hs.render(this.ctx, 30, y, isHighlighted);
+    }
+
+    if (globals.highScoreMode === "menu") {
+      const totalPages = Math.ceil(globals.highScores.length / 10);
+      this.ctx.fillStyle = "#000000ff";
+      this.ctx.font = "11px dungeon";
+      this.ctx.textAlign = "center";
+      this.ctx.fillText(
+        "↑ ↓ CHANGE PAGE  |  PAGE " +
+          (globals.highScorePage + 1) +
+          "/" +
+          totalPages,
+        this.ctx.canvas.width / 2,
+        this.ctx.canvas.height - 40,
+      );
+    }
+
+    this.ctx.fillStyle = "#000000ff";
+    this.ctx.font = "11px dungeon";
+    this.ctx.textAlign = "center";
+    this.ctx.fillText(
+      "Press SPACE to go back to the menu",
+      this.ctx.canvas.width / 2,
+      this.ctx.canvas.height - 25,
+    );
+  }
+
+  renderEnterName() {
+    this.ctx.drawImage(
+      this.secondaryBackground,
+      0,
+      0,
+      this.ctx.canvas.width,
+      this.ctx.canvas.height,
+    );
+
+    this.ctx.fillStyle = "#FFD700";
+    this.ctx.font = "20px dungeon";
+    this.ctx.textAlign = "center";
+    this.ctx.fillText("INSERT YOUR NAME", 230, 75);
+
+    this.ctx.fillStyle = "#FFFFFF";
+    this.ctx.font = "14px dungeon";
+    this.ctx.fillText("SCORE: " + globals.score, 230, 105);
+
+    const centerX = 230;
+    for (let i = 0; i < 3; i++) {
+      const letterX = centerX - 40 + i * 40;
+
+      if (i === globals.nameInputIndex) {
+        this.ctx.fillStyle = "#FFD700";
+      } else {
+        this.ctx.fillStyle = "#FFFFFF";
+      }
+
+      this.ctx.font = "40px dungeon";
+      this.ctx.textAlign = "center";
+      this.ctx.fillText(ALPHABET[globals.nameLetterIndexes[i]], letterX, 170);
+
+      if (i === globals.nameInputIndex) {
+        this.ctx.fillStyle = "#FFD700";
+        this.ctx.fillRect(letterX - 15, 175, 30, 3);
+      }
+    }
+
+    this.ctx.fillStyle = "#888888";
+    this.ctx.font = "11px dungeon";
+    this.ctx.textAlign = "center";
+    this.ctx.fillText("← → SELECT POSITION", centerX, 215);
+    this.ctx.fillText("↑ ↓ CHANGE LETTER", centerX, 235);
+    this.ctx.fillText("Press SPACE to confirm", centerX, 350);
+  }
+
+  renderLoadHighScores() {
     this.ctx.fillStyle = "#000000";
     this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     this.ctx.fillStyle = "#FFFFFF";
     this.ctx.font = "16px dungeon";
     this.ctx.textAlign = "center";
     this.ctx.fillText(
-      "HIGHSCORES -Press SPACE to return",
+      "LOADING...",
       this.ctx.canvas.width / 2,
-      200,
+      this.ctx.canvas.height / 2,
     );
   }
 
@@ -442,7 +553,7 @@ this.ctx.drawImage(
     this.ctx.fillStyle = "#FFFFFF";
     this.ctx.font = "16px dungeon";
     this.ctx.fillText(
-      "Press SPACE to return to menu",
+      "Press SPACE to insert your name",
       this.ctx.canvas.width / 2,
       this.ctx.canvas.height - 50,
     );
@@ -472,7 +583,7 @@ this.ctx.drawImage(
     this.ctx.fillStyle = "#FFFFFF";
     this.ctx.font = "16px dungeon";
     this.ctx.fillText(
-      "Press SPACE to return to menu",
+      "Press SPACE to insert your name",
       this.ctx.canvas.width / 2,
       375,
     );
