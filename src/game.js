@@ -26,8 +26,8 @@ class Game {
 
     globals.ctx = this.ctx;
 
-    this.gameState = GameState.INTRO;
-    globals.gameState = GameState.INTRO;
+    this.gameState = GameState.WIN;
+    globals.gameState = GameState.WIN;
     console.log("Game State: LOADING");
 
     this.inputManager = new Events();
@@ -201,7 +201,7 @@ class Game {
           globals.levelTime = 120;
           globals.currentLevel = 1;
           globals.goalScore = 1000;
-          globals.score = 0;
+          globals.score = 1400;
           globals.powerUp = null;
           globals.powerUpHeld = null;
           globals.powerUpSpawnTimer = 0;

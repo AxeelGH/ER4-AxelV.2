@@ -586,11 +586,11 @@ export class View {
 
     this.ctx.fillStyle = "#FFFFFF";
     this.ctx.font = "20px dungeon";
-    this.ctx.fillText("FINAL SCORE: " + globals.score, 370, 300);
+    this.ctx.fillText("FINAL SCORE: " + globals.score, 350, 300);
 
     this.ctx.fillStyle = "#FFD700";
     this.ctx.font = "20px dungeon";
-    this.ctx.fillText("HIGH SCORE: " + globals.highScore, 360, 330);
+    this.ctx.fillText("HIGH SCORE: " + globals.highScore, 342, 330);
 
     this.ctx.fillStyle = "#FFFFFF";
     this.ctx.font = "16px dungeon";
@@ -613,7 +613,7 @@ export class View {
     this.ctx.fillStyle = "#eca409ff";
     this.ctx.font = "40px dungeon";
     this.ctx.textAlign = "center";
-    this.ctx.fillText("LEVEL 2", this.ctx.canvas.width / 2, 60);
+    this.ctx.fillText("LEVEL "+ (globals.currentLevel + 1), this.ctx.canvas.width / 2, 60);
 
     this.ctx.fillStyle = "#FFFFFF";
     this.ctx.font = "40px dungeon";
